@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Needs location yo</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Needs location yo</string>
+	<key>NSLocationUsageDescription</key>
+	<string>Needs location yo</string>
+	<key>CFBundleIdentifier</key>
+	<string></string>
+	<key>CFBundleGetInfoString</key>
+	<string></string>
+	<key>CFBundleSignature</key>
+	<string></string>
+</dict>
+</plist>
