@@ -3,17 +3,18 @@ name: Rust
 on:
   push:
     branches: [ "main" ]
+    paths: [ "pace-backend/**" ]
   pull_request:
     branches: [ "main" ]
-
+    paths: [ "pace-backend/**" ]
 env:
   CARGO_TERM_COLOR: always
-
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
+    defaults:
+      run:
+        working-directory: ./pace-backend
     steps:
     - uses: actions/checkout@v3
     - name: fmt
