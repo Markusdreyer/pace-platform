@@ -1,10 +1,3 @@
-//
-//  ContentView.swift
-//  pace-beacon
-//
-//  Created by Markus Dreyer on 04/05/2023.
-//
-
 import MapKit
 import SwiftUI
 

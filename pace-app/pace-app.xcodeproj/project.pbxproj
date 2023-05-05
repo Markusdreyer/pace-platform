@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8869B5832A03E6A200AE593C /* pace_beaconApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8869B5822A03E6A200AE593C /* pace_beaconApp.swift */; };
+		8869B5832A03E6A200AE593C /* pace_app.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8869B5822A03E6A200AE593C /* pace_app.swift */; };
 		8869B5852A03E6A200AE593C /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8869B5842A03E6A200AE593C /* MapView.swift */; };
 		8869B5872A03E6A300AE593C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8869B5862A03E6A300AE593C /* Assets.xcassets */; };
 		8869B58A2A03E6A300AE593C /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8869B5892A03E6A300AE593C /* Preview Assets.xcassets */; };
@@ -15,8 +15,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		8869B57F2A03E6A200AE593C /* pace-beacon.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "pace-beacon.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		8869B5822A03E6A200AE593C /* pace_beaconApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pace_beaconApp.swift; sourceTree = "<group>"; };
+		8869B57F2A03E6A200AE593C /* pace-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "pace-app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8869B5822A03E6A200AE593C /* pace_app.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pace_app.swift; sourceTree = "<group>"; };
 		8869B5842A03E6A200AE593C /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		8869B5862A03E6A300AE593C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8869B5892A03E6A300AE593C /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -38,7 +38,7 @@
 		8869B5762A03E6A200AE593C = {
 			isa = PBXGroup;
 			children = (
-				8869B5812A03E6A200AE593C /* pace-beacon */,
+				8869B5812A03E6A200AE593C /* pace-app */,
 				8869B5802A03E6A200AE593C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -46,21 +46,21 @@
 		8869B5802A03E6A200AE593C /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8869B57F2A03E6A200AE593C /* pace-beacon.app */,
+				8869B57F2A03E6A200AE593C /* pace-app.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		8869B5812A03E6A200AE593C /* pace-beacon */ = {
+		8869B5812A03E6A200AE593C /* pace-app */ = {
 			isa = PBXGroup;
 			children = (
 				8869B5952A03F8C000AE593C /* Info.plist */,
-				8869B5822A03E6A200AE593C /* pace_beaconApp.swift */,
+				8869B5822A03E6A200AE593C /* pace_app.swift */,
 				8869B5842A03E6A200AE593C /* MapView.swift */,
 				8869B5862A03E6A300AE593C /* Assets.xcassets */,
 				8869B5882A03E6A300AE593C /* Preview Content */,
 			);
-			path = "pace-beacon";
+			path = "pace-app";
 			sourceTree = "<group>";
 		};
 		8869B5882A03E6A300AE593C /* Preview Content */ = {
@@ -74,9 +74,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		8869B57E2A03E6A200AE593C /* pace-beacon */ = {
+		8869B57E2A03E6A200AE593C /* pace-app */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 8869B58D2A03E6A300AE593C /* Build configuration list for PBXNativeTarget "pace-beacon" */;
+			buildConfigurationList = 8869B58D2A03E6A300AE593C /* Build configuration list for PBXNativeTarget "pace-app" */;
 			buildPhases = (
 				8869B57B2A03E6A200AE593C /* Sources */,
 				8869B57C2A03E6A200AE593C /* Frameworks */,
@@ -86,12 +86,12 @@
 			);
 			dependencies = (
 			);
-			name = "pace-beacon";
+			name = "pace-app";
 			packageProductDependencies = (
 				8869B5912A03E8DA00AE593C /* Starscream */,
 			);
-			productName = "pace-beacon";
-			productReference = 8869B57F2A03E6A200AE593C /* pace-beacon.app */;
+			productName = "pace-app";
+			productReference = 8869B57F2A03E6A200AE593C /* pace-app.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -109,7 +109,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 8869B57A2A03E6A200AE593C /* Build configuration list for PBXProject "pace-beacon" */;
+			buildConfigurationList = 8869B57A2A03E6A200AE593C /* Build configuration list for PBXProject "pace-app" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -125,7 +125,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				8869B57E2A03E6A200AE593C /* pace-beacon */,
+				8869B57E2A03E6A200AE593C /* pace-app */,
 			);
 		};
 /* End PBXProject section */
@@ -148,7 +148,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8869B5852A03E6A200AE593C /* MapView.swift in Sources */,
-				8869B5832A03E6A200AE593C /* pace_beaconApp.swift in Sources */,
+				8869B5832A03E6A200AE593C /* pace_app.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -276,11 +276,11 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"pace-beacon/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"pace-app/Preview Content\"";
 				DEVELOPMENT_TEAM = TK22VJZW8N;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "pace-beacon/Info.plist";
+				INFOPLIST_FILE = "pace-app/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "";
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
@@ -295,7 +295,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "markus.pace-beacon";
+				PRODUCT_BUNDLE_IDENTIFIER = "markus.pace-app";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -310,11 +310,11 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"pace-beacon/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"pace-app/Preview Content\"";
 				DEVELOPMENT_TEAM = TK22VJZW8N;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "pace-beacon/Info.plist";
+				INFOPLIST_FILE = "pace-app/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "";
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
@@ -329,7 +329,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "markus.pace-beacon";
+				PRODUCT_BUNDLE_IDENTIFIER = "markus.pace-app";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -340,7 +340,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		8869B57A2A03E6A200AE593C /* Build configuration list for PBXProject "pace-beacon" */ = {
+		8869B57A2A03E6A200AE593C /* Build configuration list for PBXProject "pace-app" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8869B58B2A03E6A300AE593C /* Debug */,
@@ -349,7 +349,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		8869B58D2A03E6A300AE593C /* Build configuration list for PBXNativeTarget "pace-beacon" */ = {
+		8869B58D2A03E6A300AE593C /* Build configuration list for PBXNativeTarget "pace-app" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8869B58E2A03E6A300AE593C /* Debug */,
