@@ -21,9 +21,13 @@ struct MapView: View {
             VStack {
                 Spacer()
                 Button(action: {
-                    viewModel.connectToWebSocket()
+                    if viewModel.isConnected {
+                        viewModel.disconnectFromWebSocket()
+                    } else {
+                        viewModel.connectToWebSocket()
+                    }
                 }) {
-                    Text(viewModel.isConnected ? "Connected": "Connect")
+                    Text(viewModel.isConnected ? "Disconnect": "Connect")
                 }
             }
         }
@@ -72,6 +76,12 @@ final class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate,
         socket?.connect()
 
         locationManager.startUpdatingLocation()
+    }
+    
+    func disconnectFromWebSocket() {
+        isConnected = false
+        socket?.disconnect()
+        locationManager?.stopUpdatingLocation()
     }
     
     private func checkLocationAuthorization() {
