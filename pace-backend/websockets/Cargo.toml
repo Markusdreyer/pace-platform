@@ -1,0 +1,12 @@
+[package]
+name = "websockets"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+actix-web = "4.3.1"
+actix = "0.13.0"
+actix-web-actors = "4.2.0"
+shared = { path = "../shared"}
+serde = { version = "1.0", features = ["derive"] }
+tracing = "0.1.37"
