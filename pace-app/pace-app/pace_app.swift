@@ -1,6 +1,6 @@
 import SwiftUI
 
-@main
+    @main
 struct pace_app: App {
     var body: some Scene {
         WindowGroup {

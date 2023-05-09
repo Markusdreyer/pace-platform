@@ -19,9 +19,9 @@ Compile the project by running the following command:
 ```bash
 cargo build
 ```
-Run the project by running the following command:
+Run services by using the relevant `make` alias, e.g.:
 ```bash
-cargo run
+make run-websockets
 ```
 
 That's it! You should now be able to compile and run the project on your local machine. 
