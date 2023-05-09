@@ -38,7 +38,7 @@ async fn main() -> std::io::Result<()> {
     configure_log(config.log.level);
 
     HttpServer::new(|| App::new().route("/ws/", web::get().to(index)))
-        .bind(("0.0.0.0", 8000))?
+        .bind(("0.0.0.0", 8080))?
         .run()
         .await
 }
