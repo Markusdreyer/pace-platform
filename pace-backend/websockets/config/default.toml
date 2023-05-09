@@ -1,0 +1,3 @@
+[log]
+level = "info"
+pretty_print = true
