@@ -47,5 +47,28 @@ members = [
 
 If the service is not added to this file, then the Rust compiler can not find it and will not compile it.
 
+## Deployment
+This project uses [fly.io](https://fly.io/) to host its backend services. As the services are still in their infancy, there is no CD pipeline setup, but this will come shortly after the services have stabilized somewhat. For now, manual deployments are the way to go, but fear not; it's super simple. 
+
+**Install the flyctl CLI:**
+```
+brew install flyctl
+```
+
+**Login to the flyctl CLI:**
+```
+fly auth login
+```
+Still need to figure out how to give others access to my project. Hopefully you should get access if you're logging with the same email as I've added to the project.
+
+**Deploy a new version:**
+```
+make deploy-websockets
+```
+This step uses an alias in the Makefile to tidy up the deployment command, but we're still using the flyctl CLI under the hood. Just check out the Makefile if you're curious about what's going on.
+
+🕰️ Note that this step will unfortunately take an eternity to complete because Rust compilation combined with the Docker runtime without caching is not a great match at the moment. 🕰️
+
+
 ## pace-app
 Contains the native iOS app code. This is currently a very simple app showing the current location of the user on a map. The app also sends this location data to the pace backend with websockets.
