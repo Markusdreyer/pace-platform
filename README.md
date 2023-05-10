@@ -70,5 +70,5 @@ This step uses an alias in the Makefile to tidy up the deployment command, but w
 🕰️ Note that this step will unfortunately take an eternity to complete because Rust compilation combined with the Docker runtime without caching is not a great match at the moment. 🕰️
 
 
-## pace-app
+## App
 Contains the native iOS app code. This is currently a very simple app showing the current location of the user on a map. The app also sends this location data to the pace backend with websockets.
