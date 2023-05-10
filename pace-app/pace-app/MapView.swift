@@ -70,7 +70,7 @@ final class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate,
     func connectToWebSocket() {
         guard let locationManager = locationManager else { return }
 
-        let request = URLRequest(url: URL(string: "ws://10.4.10.63:8080/ws/")!)
+        let request = URLRequest(url: URL(string: "wss://websockets.fly.dev/ws/")!)
         socket = WebSocket(request: request)
         socket?.delegate = self
         socket?.connect()
