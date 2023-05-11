@@ -1,3 +1,5 @@
+use crate::actors::messages::ClientActorMessage;
+use crate::actors::ws::WsConnection;
 use actix::{Actor, StreamHandler};
 use actix_web::{web, App, Error, HttpRequest, HttpResponse, HttpServer};
 use actix_web_actors::ws;
@@ -5,21 +7,18 @@ use shared::log::configure_log;
 use shared::setup_config;
 use tracing::info;
 
+mod actors;
 mod model;
 
-/// Define HTTP actor
-struct MyWs;
-
-impl Actor for MyWs {
-    type Context = ws::WebsocketContext<Self>;
-}
-
 /// Handler for ws::Message message
-impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for MyWs {
-    fn handle(&mut self, msg: Result<ws::Message, ws::ProtocolError>, _: &mut Self::Context) {
+impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for WsConnection {
+    fn handle(&mut self, msg: Result<ws::Message, ws::ProtocolError>, ctx: &mut Self::Context) {
         match msg {
             Ok(ws::Message::Ping(msg)) => info!(message = "received ping", ?msg),
-            Ok(ws::Message::Text(text)) => info!(message = "received text", ?text),
+            Ok(ws::Message::Text(text)) => {
+                info!(message = "received text", ?text);
+                self.race_addr.do_send(message)
+            }
             Ok(ws::Message::Binary(bin)) => info!(message = "received ping", ?bin),
             _ => (),
         }

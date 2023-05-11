@@ -1,4 +1,5 @@
 use std::env;
+use thiserror::Error;
 
 use config::{Config, ConfigError, Environment, File};
 use serde::Deserialize;
@@ -13,4 +14,12 @@ pub fn setup_config<'a, T: Deserialize<'a>>() -> Result<T, ConfigError> {
         .add_source(Environment::default().separator("__"))
         .build()?;
     config.try_deserialize()
+}
+
+#[derive(Debug, Error)]
+pub enum WebSocketError {
+    #[error("invalid websocket message")]
+    InvalidMessage(String),
+    #[error("could not parse data: {0}")]
+    SerdeError(#[from] serde_json::Error),
 }
