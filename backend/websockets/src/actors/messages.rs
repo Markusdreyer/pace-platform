@@ -4,12 +4,10 @@ use serde::{Deserialize, Serialize};
 use shared::WebSocketError;
 use uuid::Uuid;
 
-//WsConn responds to this to pipe it through to the actual client
 #[derive(Message)]
 #[rtype(result = "()")]
 pub struct WsMessage(pub String);
 
-//WsConn sends this to the race to say "put me in please"
 #[derive(Message)]
 #[rtype(result = "()")]
 pub struct Connect {
@@ -17,7 +15,6 @@ pub struct Connect {
     pub race_id: Uuid,
 }
 
-//WsConn sends this to a race to say "take me out please"
 #[derive(Message)]
 #[rtype(result = "()")]
 pub struct Disconnect {
@@ -25,7 +22,6 @@ pub struct Disconnect {
     pub user_id: Uuid,
 }
 
-//client sends this to the race for the race to echo out.
 #[derive(Serialize, Deserialize, Message)]
 #[rtype(result = "()")]
 pub struct ClientActorMessage {

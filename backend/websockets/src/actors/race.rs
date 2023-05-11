@@ -1,23 +1,16 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 
 use actix::{Actor, Context, Handler, Recipient};
 use uuid::Uuid;
 
-use super::messages::{Connect, Disconnect, WsMessage};
+use super::messages::{ClientActorMessage, Connect, Disconnect, WsMessage};
 use tracing::error;
 
 type Socket = Recipient<WsMessage>;
 
+#[derive(Default)]
 pub struct Race {
     participants: HashMap<Uuid, Socket>,
-}
-
-impl Default for Race {
-    fn default() -> Self {
-        Race {
-            participants: HashMap::new(),
-        }
-    }
 }
 
 impl Race {
@@ -48,7 +41,14 @@ impl Handler<Connect> for Race {
     type Result = ();
 
     fn handle(&mut self, msg: Connect, ctx: &mut Self::Context) -> Self::Result {
-        //Create a new race if necessary and then add the participant
         self.participants.insert(msg.race_id, msg.addr);
+    }
+}
+
+impl Handler<ClientActorMessage> for Race {
+    type Result = ();
+
+    fn handle(&mut self, msg: ClientActorMessage, ctx: &mut Self::Context) -> Self::Result {
+        self.send_message(&msg.user_id.to_string());
     }
 }
