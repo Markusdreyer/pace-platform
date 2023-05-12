@@ -3,11 +3,11 @@ use actix::{
     StreamHandler, WrapFuture,
 };
 use actix::{AsyncContext, Message};
+use actix_web::error;
 use actix_web::guard::Connect;
 use actix_web_actors::ws;
 use std::time::{Duration, Instant};
-use tracing::info;
-use uuid::Uuid;
+use tracing::{error, info};
 
 use super::messages::{ClientActorMessage, Connect, Disconnect, WsMessage};
 use super::race::Race;
@@ -113,8 +113,18 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for WsConnection {
             }
             Ok(ws::Message::Nop) => (),
             Ok(ws::Message::Text(s)) => {
-                let message: ClientActorMessage = serde_json::from_str::<ClientActorMessage>(&s)
-                    .expect("could not parse message"); //TODO: Do proper error handling
+                let message: ClientActorMessage =
+                    match serde_json::from_str::<ClientActorMessage>(&s) {
+                        Ok(message) => message,
+                        Err(e) => {
+                            error!(
+                                message = "could not parse message",
+                                action = "stream_handler",
+                                error = ?e
+                            );
+                            return;
+                        }
+                    };
                 info!(
                     message = "sending location update",
                     action = "stream_handler",
