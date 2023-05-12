@@ -32,16 +32,20 @@ async fn main() -> std::io::Result<()> {
     .await
 }
 
-#[get("/{group_id}")]
+#[get("/{race_id}")]
 pub async fn establish_connection(
     req: HttpRequest,
     stream: Payload,
-    Path(group_id): Path<Uuid>,
+    Path(race_id): Path<Uuid>,
     srv: Data<Addr<Race>>,
 ) -> Result<HttpResponse, Error> {
-    info!("Received request");
-    let user_id = Uuid::new_v4(); //TODO: get this from app
-    let ws = WsConnection::new(user_id, group_id, srv.get_ref().clone());
+    info!(
+        message = "new connection",
+        action = "establish_connection",
+        ?req
+    );
+    let user_id = Uuid::new_v4();
+    let ws = WsConnection::new(user_id, race_id, srv.get_ref().clone());
     let resp = ws::start(ws, &req, stream)?;
     Ok(resp)
 }

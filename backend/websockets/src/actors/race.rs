@@ -4,7 +4,7 @@ use actix::{Actor, Context, Handler, Recipient};
 use uuid::Uuid;
 
 use super::messages::{ClientActorMessage, Connect, Disconnect, WsMessage};
-use tracing::error;
+use tracing::{error, info};
 
 type Socket = Recipient<WsMessage>;
 
@@ -14,11 +14,12 @@ pub struct Race {
 }
 
 impl Race {
-    fn send_message(&self, message: &str) {
-        if let Some(socket) = self.participants.get(&Uuid::new_v4()) {
-            let _ = socket.do_send(WsMessage(message.to_string()));
+    fn send_message(&self, msg: ClientActorMessage) {
+        if let Some(socket) = self.participants.get(&msg.user_id) {
+            info!(message = "sending message", action = "send_message", participants = ?self.participants);
+            let _ = socket.do_send(WsMessage(msg));
         } else {
-            error!("Could not find socket")
+            error!(message = "could not find socket", action = "send_message")
         }
     }
 }
@@ -32,7 +33,10 @@ impl Handler<Disconnect> for Race {
 
     fn handle(&mut self, msg: Disconnect, ctx: &mut Self::Context) -> Self::Result {
         if self.participants.remove(&msg.user_id).is_none() {
-            error!("Could not find socket")
+            error!(
+                message = "could not find socket",
+                action = "disconnect_handler"
+            )
         }
     }
 }
@@ -41,6 +45,7 @@ impl Handler<Connect> for Race {
     type Result = ();
 
     fn handle(&mut self, msg: Connect, ctx: &mut Self::Context) -> Self::Result {
+        info!(message = "new connection", action = "connect_handler");
         self.participants.insert(msg.race_id, msg.addr);
     }
 }
@@ -49,6 +54,7 @@ impl Handler<ClientActorMessage> for Race {
     type Result = ();
 
     fn handle(&mut self, msg: ClientActorMessage, ctx: &mut Self::Context) -> Self::Result {
-        self.send_message(&msg.user_id.to_string());
+        info!(message = "new message", action = "message_handler");
+        self.send_message(msg);
     }
 }

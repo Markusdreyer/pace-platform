@@ -1,10 +1,14 @@
-use actix::{fut, Actor, ActorContext, Addr, Running, StreamHandler};
+use actix::{
+    fut, Actor, ActorContext, ActorFuture, Addr, ContextFutureSpawner, Handler, Running,
+    StreamHandler, WrapFuture,
+};
 use actix::{AsyncContext, Message};
+use actix_web::guard::Connect;
 use actix_web_actors::ws;
 use std::time::{Duration, Instant};
 use uuid::Uuid;
 
-use super::messages::{ClientActorMessage, Disconnect};
+use super::messages::{ClientActorMessage, Connect, Disconnect, WsMessage};
 use super::race::Race;
 
 const HEARTBEAT_INTERVAL: Duration = Duration::from_secs(5);
@@ -30,13 +34,35 @@ impl WsConnection {
     }
 }
 
+impl Handler<WsMessage> for WsConnection {
+    type Result = ();
+
+    fn handle(&mut self, msg: WsMessage, ctx: &mut Self::Context) -> Self::Result {
+        ctx.text(serde_json::to_string(&msg.0).unwrap())
+    }
+}
+
 impl Actor for WsConnection {
     type Context = ws::WebsocketContext<Self>;
 
     fn started(&mut self, ctx: &mut Self::Context) {
-        self.heartbeat;
+        //self.heartbeat(ctx) TODO: Fix this
 
         let addr = ctx.address();
+        self.race_addr
+            .send(Connect {
+                addr: addr.recipient(),
+                race_id: self.race_id,
+            })
+            .into_actor(self)
+            .then(|res, act, ctx| {
+                match res {
+                    Ok(_) => (),
+                    _ => ctx.stop(),
+                }
+                fut::ready(())
+            })
+            .wait(ctx);
     }
 
     fn stopping(&mut self, _: &mut Self::Context) -> Running {

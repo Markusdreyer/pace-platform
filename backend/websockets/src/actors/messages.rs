@@ -6,7 +6,7 @@ use uuid::Uuid;
 
 #[derive(Message)]
 #[rtype(result = "()")]
-pub struct WsMessage(pub String);
+pub struct WsMessage(pub ClientActorMessage);
 
 #[derive(Message)]
 #[rtype(result = "()")]
