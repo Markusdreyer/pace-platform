@@ -2,7 +2,6 @@ use actix::{Message, Recipient};
 use actix_web_actors::ws;
 use serde::{Deserialize, Serialize};
 use shared::WebSocketError;
-use uuid::Uuid;
 
 #[derive(Message)]
 #[rtype(result = "()")]

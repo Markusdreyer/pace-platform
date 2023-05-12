@@ -3,8 +3,6 @@ use actix::{
     StreamHandler, WrapFuture,
 };
 use actix::{AsyncContext, Message};
-use actix_web::error;
-use actix_web::guard::Connect;
 use actix_web_actors::ws;
 use std::time::{Duration, Instant};
 use tracing::{error, info};
@@ -38,7 +36,11 @@ impl WsConnection {
         ctx.run_interval(HEARTBEAT_INTERVAL, |act, ctx| {
             info!(message = "pinging client", action = "heartbeat", ?act);
             if Instant::now().duration_since(act.heartbeat) > CLIENT_TIMEOUT {
-                println!("Disconnecting failed heartbeat");
+                info!(
+                    message = "client heartbeat failed, disconnecting",
+                    action = "heartbeat",
+                    ?act
+                );
                 act.race_addr.do_send(Disconnect {
                     user_id: act.user_id.clone(),
                     race_id: act.race_id.clone(),
@@ -74,7 +76,7 @@ impl Actor for WsConnection {
                 user_id: self.user_id.clone(),
             })
             .into_actor(self)
-            .then(|res, act, ctx| {
+            .then(|res, _act, ctx| {
                 match res {
                     Ok(_) => (),
                     _ => ctx.stop(),

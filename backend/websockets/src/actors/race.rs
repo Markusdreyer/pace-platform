@@ -31,7 +31,7 @@ impl Actor for Race {
 impl Handler<Disconnect> for Race {
     type Result = ();
 
-    fn handle(&mut self, msg: Disconnect, ctx: &mut Self::Context) -> Self::Result {
+    fn handle(&mut self, msg: Disconnect, _ctx: &mut Self::Context) -> Self::Result {
         info!(message = "disconnecting", action = "disconnect_handler", participants = ?self.participants, ?msg);
         if self.participants.remove(&msg.user_id).is_none() {
             error!(
@@ -45,7 +45,7 @@ impl Handler<Disconnect> for Race {
 impl Handler<Connect> for Race {
     type Result = ();
 
-    fn handle(&mut self, msg: Connect, ctx: &mut Self::Context) -> Self::Result {
+    fn handle(&mut self, msg: Connect, _ctx: &mut Self::Context) -> Self::Result {
         info!(message = "new connection", action = "connect_handler", ?msg);
         self.participants.insert(msg.user_id, msg.addr);
     }
@@ -54,7 +54,7 @@ impl Handler<Connect> for Race {
 impl Handler<ClientActorMessage> for Race {
     type Result = ();
 
-    fn handle(&mut self, msg: ClientActorMessage, ctx: &mut Self::Context) -> Self::Result {
+    fn handle(&mut self, msg: ClientActorMessage, _ctx: &mut Self::Context) -> Self::Result {
         info!(message = "new message", action = "message_handler");
         self.send_message(msg);
     }
