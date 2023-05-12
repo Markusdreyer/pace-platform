@@ -15,7 +15,7 @@ use super::race::Race;
 const HEARTBEAT_INTERVAL: Duration = Duration::from_secs(5);
 const CLIENT_TIMEOUT: Duration = Duration::from_secs(10);
 
-#[derive(Message)]
+#[derive(Message, Debug)]
 #[rtype(result = "()")]
 pub struct WsConnection {
     pub user_id: String,
@@ -33,6 +33,23 @@ impl WsConnection {
             race_addr: race,
         }
     }
+
+    fn heartbeat(&self, ctx: &mut ws::WebsocketContext<WsConnection>) {
+        ctx.run_interval(HEARTBEAT_INTERVAL, |act, ctx| {
+            info!(message = "pinging client", action = "heartbeat", ?act);
+            if Instant::now().duration_since(act.heartbeat) > CLIENT_TIMEOUT {
+                println!("Disconnecting failed heartbeat");
+                act.race_addr.do_send(Disconnect {
+                    user_id: act.user_id.clone(),
+                    race_id: act.race_id.clone(),
+                });
+                ctx.stop();
+                return;
+            }
+
+            ctx.ping(b"PING");
+        });
+    }
 }
 
 impl Handler<WsMessage> for WsConnection {
@@ -47,7 +64,7 @@ impl Actor for WsConnection {
     type Context = ws::WebsocketContext<Self>;
 
     fn started(&mut self, ctx: &mut Self::Context) {
-        //self.heartbeat(ctx) TODO: Fix this
+        self.heartbeat(ctx);
 
         let addr = ctx.address();
         self.race_addr
