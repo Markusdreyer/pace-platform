@@ -8,26 +8,27 @@ use uuid::Uuid;
 #[rtype(result = "()")]
 pub struct WsMessage(pub ClientActorMessage);
 
-#[derive(Message)]
+#[derive(Message, Debug)]
 #[rtype(result = "()")]
 pub struct Connect {
     pub addr: Recipient<WsMessage>,
-    pub race_id: Uuid,
+    pub race_id: String,
+    pub user_id: String,
 }
 
-#[derive(Message)]
+#[derive(Message, Debug)]
 #[rtype(result = "()")]
 pub struct Disconnect {
-    pub race_id: Uuid,
-    pub user_id: Uuid,
+    pub race_id: String,
+    pub user_id: String,
 }
 
-#[derive(Serialize, Deserialize, Message)]
+#[derive(Serialize, Deserialize, Message, Debug, Clone)]
 #[rtype(result = "()")]
 pub struct ClientActorMessage {
-    pub user_id: Uuid,
+    pub user_id: String,
+    pub race_id: String,
     pub coordinates: Coordinates,
-    pub race_id: Uuid,
 }
 
 impl TryFrom<ws::Message> for ClientActorMessage {
@@ -46,7 +47,7 @@ impl TryFrom<ws::Message> for ClientActorMessage {
     }
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Coordinates {
     pub latitude: f64,
     pub longitude: f64,

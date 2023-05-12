@@ -6,6 +6,7 @@ use actix::{AsyncContext, Message};
 use actix_web::guard::Connect;
 use actix_web_actors::ws;
 use std::time::{Duration, Instant};
+use tracing::info;
 use uuid::Uuid;
 
 use super::messages::{ClientActorMessage, Connect, Disconnect, WsMessage};
@@ -17,14 +18,14 @@ const CLIENT_TIMEOUT: Duration = Duration::from_secs(10);
 #[derive(Message)]
 #[rtype(result = "()")]
 pub struct WsConnection {
-    pub user_id: Uuid,
-    pub race_id: Uuid,
+    pub user_id: String,
+    pub race_id: String,
     pub race_addr: Addr<Race>,
     pub heartbeat: Instant,
 }
 
 impl WsConnection {
-    pub fn new(user_id: Uuid, race_id: Uuid, race: Addr<Race>) -> WsConnection {
+    pub fn new(user_id: String, race_id: String, race: Addr<Race>) -> WsConnection {
         WsConnection {
             user_id,
             race_id,
@@ -52,7 +53,8 @@ impl Actor for WsConnection {
         self.race_addr
             .send(Connect {
                 addr: addr.recipient(),
-                race_id: self.race_id,
+                race_id: self.race_id.clone(),
+                user_id: self.user_id.clone(),
             })
             .into_actor(self)
             .then(|res, act, ctx| {
@@ -67,8 +69,8 @@ impl Actor for WsConnection {
 
     fn stopping(&mut self, _: &mut Self::Context) -> Running {
         self.race_addr.do_send(Disconnect {
-            user_id: self.user_id,
-            race_id: self.race_id,
+            user_id: self.user_id.clone(),
+            race_id: self.race_id.clone(),
         });
         Running::Stop
     }
@@ -96,6 +98,11 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for WsConnection {
             Ok(ws::Message::Text(s)) => {
                 let message: ClientActorMessage = serde_json::from_str::<ClientActorMessage>(&s)
                     .expect("could not parse message"); //TODO: Do proper error handling
+                info!(
+                    message = "sending location update",
+                    action = "stream_handler",
+                    addr = ?self.race_addr
+                );
                 self.race_addr.do_send(message);
             }
 

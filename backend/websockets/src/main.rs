@@ -36,15 +36,12 @@ async fn main() -> std::io::Result<()> {
 pub async fn establish_connection(
     req: HttpRequest,
     stream: Payload,
-    Path(race_id): Path<Uuid>,
+    Path(race_id): Path<String>,
     srv: Data<Addr<Race>>,
 ) -> Result<HttpResponse, Error> {
-    info!(
-        message = "new connection",
-        action = "establish_connection",
-        ?req
-    );
-    let user_id = Uuid::new_v4();
+    info!(message = "new connection", action = "establish_connection");
+    //get a random, five digit string to use as the user id
+    let user_id = Uuid::new_v4().to_string();
     let ws = WsConnection::new(user_id, race_id, srv.get_ref().clone());
     let resp = ws::start(ws, &req, stream)?;
     Ok(resp)
