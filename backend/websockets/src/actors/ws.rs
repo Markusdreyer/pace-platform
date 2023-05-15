@@ -6,7 +6,7 @@ use actix::{AsyncContext, Message};
 use actix_web_actors::ws;
 use shared::WebSocketError;
 use std::time::{Duration, Instant};
-use tracing::{error, info};
+use tracing::{debug, error, info};
 
 use super::messages::{Connect, Disconnect, LocationUpdateMessage, WsMessage};
 use super::race::Race;
@@ -35,7 +35,7 @@ impl WsConnection {
 
     fn heartbeat(&self, ctx: &mut ws::WebsocketContext<WsConnection>) {
         ctx.run_interval(HEARTBEAT_INTERVAL, |act, ctx| {
-            info!(message = "pinging client", action = "heartbeat", ?act);
+            debug!(message = "pinging client", action = "heartbeat", ?act);
             if Instant::now().duration_since(act.heartbeat) > CLIENT_TIMEOUT {
                 info!(
                     message = "client heartbeat failed, disconnecting",

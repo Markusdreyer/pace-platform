@@ -27,7 +27,7 @@ async fn main() -> std::io::Result<()> {
             .service(establish_connection)
             .data(race_server.clone())
     })
-    .bind("127.0.0.1:8080")?
+    .bind("0.0.0.0:8080")?
     .run()
     .await
 }
@@ -40,7 +40,6 @@ pub async fn establish_connection(
     srv: Data<Addr<Race>>,
 ) -> Result<HttpResponse, Error> {
     info!(message = "new connection", action = "establish_connection");
-    //get a random, five digit string to use as the user id
     let user_id = Uuid::new_v4().to_string();
     let ws = WsConnection::new(user_id, race_id, srv.get_ref().clone());
     let resp = ws::start(ws, &req, stream)?;
