@@ -1,11 +1,8 @@
-use std::fmt::Binary;
-
 use actix::{Message, Recipient};
 use actix_web::web::Bytes;
 use actix_web_actors::ws;
 use serde::{Deserialize, Serialize};
 use shared::WebSocketError;
-use tracing::error;
 
 #[derive(Message)]
 #[rtype(result = "()")]

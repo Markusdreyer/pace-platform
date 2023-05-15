@@ -4,11 +4,8 @@ use actix::{
 };
 use actix::{AsyncContext, Message};
 use actix_web_actors::ws;
-use serde::__private::de::IdentifierDeserializer;
-use shared::WebSocketError;
 use std::time::{Duration, Instant};
-use tracing::log::warn;
-use tracing::{debug, error, info};
+use tracing::{debug, info};
 
 use super::messages::{Connect, Disconnect, LocationUpdateMessage, WsMessage};
 use super::race::Race;
