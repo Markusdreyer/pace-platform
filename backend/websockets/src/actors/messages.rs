@@ -68,6 +68,6 @@ impl TryFrom<ws::Message> for LocationUpdateMessage {
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Coordinates {
-    pub latitude: f64,
-    pub longitude: f64,
+    pub lat: f64,
+    pub long: f64,
 }
