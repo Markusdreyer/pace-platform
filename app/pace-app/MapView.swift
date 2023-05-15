@@ -23,9 +23,14 @@ struct MapView: View {
                 VStack {
                     HStack {
                         TextField("User ID", text: $viewModel.userId)
+                            .autocapitalization(.none)
+                            .autocorrectionDisabled()
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                             .padding()
                         TextField("Race ID", text: $viewModel.raceId)
+                            .autocapitalization(.none)
+                            .autocorrectionDisabled()
+                            .textInputAutocapitalization(.none)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                             .padding()
                     }
@@ -88,8 +93,10 @@ final class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate,
     
     func connectToWebSocket() {
         guard let locationManager = locationManager else { return }
+        let remoteUrl: String = "wss://websockets.fly.dev/"
+        let localUrl: String = "ws://localhost:8080/"
     
-        let request = URLRequest(url: URL(string: "wss://websockets.fly.dev/\(raceId)")!)
+        let request = URLRequest(url: URL(string: localUrl + raceId)!)
         socket = WebSocket(request: request)
         socket?.delegate = self
         socket?.connect()
