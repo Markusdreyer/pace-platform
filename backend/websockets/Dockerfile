@@ -1,19 +1,20 @@
-FROM rust:1.68 as builder
-
+FROM lukemathwalker/cargo-chef:latest AS chef
 WORKDIR app
 
-RUN cargo new websockets \
-    && cargo new shared --lib
-COPY websockets/Cargo.toml websockets/Cargo.toml
-COPY shared/Cargo.toml shared/Cargo.toml
-COPY Cargo.toml .
-COPY Cargo.lock .
-
-# Build application
+FROM chef AS planner
 COPY . .
-RUN cargo build --release --manifest-path websockets/Cargo.toml
+RUN cargo chef prepare --bin websockets
 
-FROM debian:bookworm-slim
+FROM chef as builder
+COPY --from=planner /app/recipe.json recipe.json
+
+RUN cargo chef cook --release --recipe-path recipe.json
+
+COPY . .
+RUN cargo build --release --bin websockets
+
+FROM debian:bullseye-slim AS runtime
+WORKDIR app
 COPY --from=builder /app/target/release/websockets /usr/local/bin/websockets
-CMD ["websockets"]
+ENTRYPOINT ["websockets"]
 EXPOSE 8080

@@ -20,15 +20,32 @@ struct MapView: View {
                 .offset(x: 150, y: -350)
             VStack {
                 Spacer()
-                Button(action: {
-                    if viewModel.isConnected {
-                        viewModel.disconnectFromWebSocket()
-                    } else {
-                        viewModel.connectToWebSocket()
+                VStack {
+                    HStack {
+                        TextField("User ID", text: $viewModel.userId)
+                            .autocapitalization(.none)
+                            .autocorrectionDisabled()
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .padding()
+                        TextField("Race ID", text: $viewModel.raceId)
+                            .autocapitalization(.none)
+                            .autocorrectionDisabled()
+                            .textInputAutocapitalization(.none)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .padding()
                     }
-                }) {
-                    Text(viewModel.isConnected ? "Disconnect": "Connect")
+                    Button(action: {
+                        if viewModel.isConnected {
+                            viewModel.disconnectFromWebSocket()
+                        } else {
+                            viewModel.connectToWebSocket()
+                        }
+                    }) {
+                        Text(viewModel.isConnected ? "Disconnect": "Connect")
+                    }
                 }
+                .padding()
+                .background(Color(.secondarySystemBackground))
             }
         }
         .onAppear {
@@ -43,10 +60,15 @@ struct MapView_Previews: PreviewProvider {
     }
 }
 
-struct GeoLocation: Codable {
-    let uuid: String
+struct Coordinates: Codable {
     let lat: Double
     let long: Double
+}
+
+struct LocationUpdate: Codable {
+    let userId: String
+    let timestamp: Int
+    let coordinates: Coordinates
 }
 
 final class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, WebSocketDelegate {
@@ -56,6 +78,8 @@ final class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate,
     @Published var region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 59.912922, longitude: 10.741735),
                                                    span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005))
     @Published var isConnected = false
+    @Published var userId = ""
+    @Published var raceId = ""
     
     func checkIfLocationServicesIsEnabled() {
         if CLLocationManager.locationServicesEnabled() {
@@ -69,8 +93,10 @@ final class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate,
     
     func connectToWebSocket() {
         guard let locationManager = locationManager else { return }
-
-        let request = URLRequest(url: URL(string: "wss://websockets.fly.dev/ws/")!)
+        let remoteUrl: String = "wss://websockets.fly.dev/"
+        let _: String = "ws://localhost:8080/"
+    
+        let request = URLRequest(url: URL(string: remoteUrl + raceId)!)
         socket = WebSocket(request: request)
         socket?.delegate = self
         socket?.connect()
@@ -118,9 +144,11 @@ final class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate,
         print(lat)
         print(long)
         
-        let geoLocation = GeoLocation(uuid: "UUID", lat: lat, long: long)
+        let timestamp = Int(Date().timeIntervalSince1970)
+        let coordinates = Coordinates(lat: lat, long: long)
+        let locationUpdate = LocationUpdate(userId: userId, timestamp: timestamp, coordinates: coordinates)
         let encoder = JSONEncoder()
-        guard let data = try? encoder.encode(geoLocation) else { return }
+        guard let data = try? encoder.encode(locationUpdate) else { return }
         socket?.write(data: data)
     }
     

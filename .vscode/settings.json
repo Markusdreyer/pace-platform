@@ -1,0 +1,8 @@
+{
+    "rust-analyzer.linkedProjects": [
+        "./backend/websockets/Cargo.toml",
+        "./backend/websockets/Cargo.toml",
+        "./backend/websockets/Cargo.toml",
+        "./backend/websockets/Cargo.toml"
+    ]
+}
