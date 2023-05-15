@@ -67,8 +67,8 @@ struct Coordinates: Codable {
 
 struct LocationUpdate: Codable {
     let userId: String
-    let timestamp: Double
-    let coordinats: Coordinates
+    let timestamp: Int
+    let coordinates: Coordinates
 }
 
 final class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate, WebSocketDelegate {
@@ -94,9 +94,9 @@ final class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate,
     func connectToWebSocket() {
         guard let locationManager = locationManager else { return }
         let remoteUrl: String = "wss://websockets.fly.dev/"
-        let localUrl: String = "ws://localhost:8080/"
+        let _: String = "ws://localhost:8080/"
     
-        let request = URLRequest(url: URL(string: localUrl + raceId)!)
+        let request = URLRequest(url: URL(string: remoteUrl + raceId)!)
         socket = WebSocket(request: request)
         socket?.delegate = self
         socket?.connect()
@@ -144,8 +144,9 @@ final class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate,
         print(lat)
         print(long)
         
+        let timestamp = Int(Date().timeIntervalSince1970)
         let coordinates = Coordinates(lat: lat, long: long)
-        let locationUpdate = LocationUpdate(userId: userId, timestamp: Date().timeIntervalSince1970, coordinats: coordinates)
+        let locationUpdate = LocationUpdate(userId: userId, timestamp: timestamp, coordinates: coordinates)
         let encoder = JSONEncoder()
         guard let data = try? encoder.encode(locationUpdate) else { return }
         socket?.write(data: data)
