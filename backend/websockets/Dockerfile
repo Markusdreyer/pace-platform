@@ -15,6 +15,6 @@ RUN cargo build --release --bin websockets
 
 FROM debian:bullseye-slim AS runtime
 WORKDIR app
-COPY --from=builder /app/target/release/websockets /usr/local/websockets
+COPY --from=builder /app/target/release/websockets /usr/local/bin/websockets
 ENTRYPOINT ["websockets"]
 EXPOSE 8080
