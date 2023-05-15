@@ -4,8 +4,10 @@ use actix::{
 };
 use actix::{AsyncContext, Message};
 use actix_web_actors::ws;
+use serde::__private::de::IdentifierDeserializer;
 use shared::WebSocketError;
 use std::time::{Duration, Instant};
+use tracing::log::warn;
 use tracing::{debug, error, info};
 
 use super::messages::{Connect, Disconnect, LocationUpdateMessage, WsMessage};
@@ -104,7 +106,13 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for WsConnection {
             Ok(ws::Message::Pong(_)) => {
                 self.heartbeat = Instant::now();
             }
-            Ok(ws::Message::Binary(bin)) => ctx.binary(bin),
+            Ok(ws::Message::Binary(bin)) => {
+                let location_update_message: LocationUpdateMessage = match bin.try_into() {
+                    Ok(message) => message,
+                    Err(e) => return ctx.text(e.to_json().to_string()),
+                };
+                self.race_addr.do_send(location_update_message);
+            }
             Ok(ws::Message::Close(reason)) => {
                 ctx.close(reason);
                 ctx.stop();
@@ -113,28 +121,13 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for WsConnection {
                 ctx.stop();
             }
             Ok(ws::Message::Nop) => (),
-            Ok(ws::Message::Text(s)) => {
-                let message: LocationUpdateMessage =
-                    match serde_json::from_str::<LocationUpdateMessage>(&s) {
-                        Ok(message) => message,
-                        Err(e) => {
-                            error!(
-                                message = "could not parse message",
-                                action = "stream_handler",
-                                error = ?e
-                            );
-                            ctx.text(WebSocketError::SerdeError(e).to_json().to_string());
-                            return;
-                        }
-                    };
-                info!(
-                    message = "sending location update",
-                    action = "stream_handler",
-                    addr = ?self.race_addr
-                );
-                self.race_addr.do_send(message);
+            Ok(ws::Message::Text(text)) => {
+                let location_update_message: LocationUpdateMessage = match text.try_into() {
+                    Ok(message) => message,
+                    Err(e) => return ctx.text(e.to_json().to_string()),
+                };
+                self.race_addr.do_send(location_update_message);
             }
-
             Err(e) => panic!("{}", e),
         }
     }

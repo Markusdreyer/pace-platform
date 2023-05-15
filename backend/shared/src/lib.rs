@@ -1,5 +1,5 @@
 use serde_json::{json, Value};
-use std::env;
+use std::{env, string::FromUtf8Error};
 use thiserror::Error;
 
 use config::{Config, ConfigError, Environment, File};
@@ -23,6 +23,8 @@ pub enum WebSocketError {
     InvalidMessage(String),
     #[error("could not parse data: {0}")]
     SerdeError(#[from] serde_json::Error),
+    #[error("uf8 error: {0}")]
+    Utf8Error(#[from] FromUtf8Error),
 }
 
 impl WebSocketError {
@@ -34,6 +36,10 @@ impl WebSocketError {
             }),
             WebSocketError::SerdeError(err) => json!({
                 "error": "Serde Error",
+                "reason": format!("{err}")
+            }),
+            WebSocketError::Utf8Error(err) => json!({
+                "error": "Utf8 Error",
                 "reason": format!("{err}")
             }),
         }
@@ -57,6 +63,7 @@ impl ErrorToJson for WebSocketError {
         match self {
             WebSocketError::InvalidMessage(_) => "Invalid Message",
             WebSocketError::SerdeError(_) => "Serde Error",
+            WebSocketError::Utf8Error(_) => "Utf8 Error",
         }
     }
 
@@ -64,6 +71,7 @@ impl ErrorToJson for WebSocketError {
         match self {
             WebSocketError::InvalidMessage(msg) => msg.clone(),
             WebSocketError::SerdeError(err) => format!("{err}"),
+            WebSocketError::Utf8Error(err) => format!("{err}"),
         }
     }
 }

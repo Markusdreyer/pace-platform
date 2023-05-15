@@ -1,7 +1,11 @@
+use std::fmt::Binary;
+
 use actix::{Message, Recipient};
+use actix_web::web::Bytes;
 use actix_web_actors::ws;
 use serde::{Deserialize, Serialize};
 use shared::WebSocketError;
+use tracing::error;
 
 #[derive(Message)]
 #[rtype(result = "()")]
@@ -28,6 +32,25 @@ pub struct LocationUpdateMessage {
     pub user_id: String,
     pub timestamp: u64,
     pub coordinates: Coordinates,
+}
+
+impl TryFrom<Bytes> for LocationUpdateMessage {
+    type Error = WebSocketError;
+
+    fn try_from(value: Bytes) -> Result<Self, Self::Error> {
+        let text = String::from_utf8(value.to_vec())?;
+        let message: LocationUpdateMessage = serde_json::from_str::<LocationUpdateMessage>(&text)?;
+        Ok(message)
+    }
+}
+
+impl TryFrom<String> for LocationUpdateMessage {
+    type Error = WebSocketError;
+
+    fn try_from(value: String) -> Result<Self, WebSocketError> {
+        let message: LocationUpdateMessage = serde_json::from_str::<LocationUpdateMessage>(&value)?;
+        Ok(message)
+    }
 }
 
 impl TryFrom<ws::Message> for LocationUpdateMessage {
