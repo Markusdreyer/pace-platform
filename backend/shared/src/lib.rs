@@ -1,3 +1,4 @@
+use serde_json::{json, Value};
 use std::env;
 use thiserror::Error;
 
@@ -22,4 +23,47 @@ pub enum WebSocketError {
     InvalidMessage(String),
     #[error("could not parse data: {0}")]
     SerdeError(#[from] serde_json::Error),
+}
+
+impl WebSocketError {
+    pub fn to_json(&self) -> Value {
+        match self {
+            WebSocketError::InvalidMessage(msg) => json!({
+                "error": "Invalid Message",
+                "reason": msg
+            }),
+            WebSocketError::SerdeError(err) => json!({
+                "error": "Serde Error",
+                "reason": format!("{err}")
+            }),
+        }
+    }
+}
+
+pub trait ErrorToJson {
+    fn error_type(&self) -> &'static str;
+    fn error_reason(&self) -> String;
+
+    fn to_json(&self) -> Value {
+        json!({
+            "error": self.error_type(),
+            "reason": self.error_reason()
+        })
+    }
+}
+
+impl ErrorToJson for WebSocketError {
+    fn error_type(&self) -> &'static str {
+        match self {
+            WebSocketError::InvalidMessage(_) => "Invalid Message",
+            WebSocketError::SerdeError(_) => "Serde Error",
+        }
+    }
+
+    fn error_reason(&self) -> String {
+        match self {
+            WebSocketError::InvalidMessage(msg) => msg.clone(),
+            WebSocketError::SerdeError(err) => format!("{err}"),
+        }
+    }
 }

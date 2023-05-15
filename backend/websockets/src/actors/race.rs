@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use actix::{Actor, Context, Handler, Recipient};
 
-use super::messages::{ClientActorMessage, Connect, Disconnect, WsMessage};
+use super::messages::{Connect, Disconnect, LocationUpdateMessage, WsMessage};
 use tracing::{error, info};
 
 type Socket = Recipient<WsMessage>;
@@ -13,8 +13,7 @@ pub struct Race {
 }
 
 impl Race {
-    fn send_message(&self, msg: ClientActorMessage) {
-        //Send message to all participants in a race
+    fn send_message(&self, msg: LocationUpdateMessage) {
         for (id, socket) in &self.participants {
             if id != &msg.user_id {
                 info!(message = "sending message", action = "send_message", ?msg);
@@ -51,10 +50,10 @@ impl Handler<Connect> for Race {
     }
 }
 
-impl Handler<ClientActorMessage> for Race {
+impl Handler<LocationUpdateMessage> for Race {
     type Result = ();
 
-    fn handle(&mut self, msg: ClientActorMessage, _ctx: &mut Self::Context) -> Self::Result {
+    fn handle(&mut self, msg: LocationUpdateMessage, _ctx: &mut Self::Context) -> Self::Result {
         info!(message = "new message", action = "message_handler");
         self.send_message(msg);
     }

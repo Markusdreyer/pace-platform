@@ -5,7 +5,7 @@ use shared::WebSocketError;
 
 #[derive(Message)]
 #[rtype(result = "()")]
-pub struct WsMessage(pub ClientActorMessage);
+pub struct WsMessage(pub LocationUpdateMessage);
 
 #[derive(Message, Debug)]
 #[rtype(result = "()")]
@@ -18,25 +18,25 @@ pub struct Connect {
 #[derive(Message, Debug)]
 #[rtype(result = "()")]
 pub struct Disconnect {
-    pub race_id: String,
     pub user_id: String,
 }
 
 #[derive(Serialize, Deserialize, Message, Debug, Clone)]
 #[rtype(result = "()")]
-pub struct ClientActorMessage {
+#[serde(rename_all = "camelCase")]
+pub struct LocationUpdateMessage {
     pub user_id: String,
-    pub race_id: String,
+    pub timestamp: u64,
     pub coordinates: Coordinates,
 }
 
-impl TryFrom<ws::Message> for ClientActorMessage {
+impl TryFrom<ws::Message> for LocationUpdateMessage {
     type Error = WebSocketError;
 
     fn try_from(value: ws::Message) -> Result<Self, WebSocketError> {
         match value {
             ws::Message::Text(text) => {
-                let message: ClientActorMessage = serde_json::from_str(&text)?;
+                let message: LocationUpdateMessage = serde_json::from_str(&text)?;
                 Ok(message)
             }
             _ => Err(WebSocketError::InvalidMessage(

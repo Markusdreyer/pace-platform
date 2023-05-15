@@ -4,10 +4,11 @@ use actix::{
 };
 use actix::{AsyncContext, Message};
 use actix_web_actors::ws;
+use shared::WebSocketError;
 use std::time::{Duration, Instant};
 use tracing::{error, info};
 
-use super::messages::{ClientActorMessage, Connect, Disconnect, WsMessage};
+use super::messages::{Connect, Disconnect, LocationUpdateMessage, WsMessage};
 use super::race::Race;
 
 const HEARTBEAT_INTERVAL: Duration = Duration::from_secs(5);
@@ -43,7 +44,6 @@ impl WsConnection {
                 );
                 act.race_addr.do_send(Disconnect {
                     user_id: act.user_id.clone(),
-                    race_id: act.race_id.clone(),
                 });
                 ctx.stop();
                 return;
@@ -89,7 +89,6 @@ impl Actor for WsConnection {
     fn stopping(&mut self, _: &mut Self::Context) -> Running {
         self.race_addr.do_send(Disconnect {
             user_id: self.user_id.clone(),
-            race_id: self.race_id.clone(),
         });
         Running::Stop
     }
@@ -115,8 +114,8 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for WsConnection {
             }
             Ok(ws::Message::Nop) => (),
             Ok(ws::Message::Text(s)) => {
-                let message: ClientActorMessage =
-                    match serde_json::from_str::<ClientActorMessage>(&s) {
+                let message: LocationUpdateMessage =
+                    match serde_json::from_str::<LocationUpdateMessage>(&s) {
                         Ok(message) => message,
                         Err(e) => {
                             error!(
@@ -124,6 +123,7 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for WsConnection {
                                 action = "stream_handler",
                                 error = ?e
                             );
+                            ctx.text(WebSocketError::SerdeError(e).to_json().to_string());
                             return;
                         }
                     };
