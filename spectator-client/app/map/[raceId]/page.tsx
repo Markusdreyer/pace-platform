@@ -13,6 +13,9 @@ const Marker = ({ text }: any) => (
   </div>
 );
 
+interface UserLocations {
+    [userId: string]: LocationUpdate[];
+}
 
 interface LocationUpdate {
     userId: string;
@@ -23,17 +26,12 @@ interface LocationUpdate {
     };
 }
 
-interface Params {
-  raceId: string;
-
-}
-
 const REMOTE_URL = 'wss://websockets.fly.dev/';
 const LOCAL_URL  = 'ws://localhost:8080/';
 
 export default function MapPage({params}: any) {
   const raceId = params.raceId
-  const [locations, setLocations] = useState<LocationUpdate>(Object.create(null));
+  const [locations, setLocations] = useState<UserLocations>({});
   const [center, setCenter] = useState({ lat: 0, lng: 0 });
   const [zoom, setZoom] = useState(0);
   const ws = new WebSocket(LOCAL_URL + raceId);
@@ -48,10 +46,14 @@ export default function MapPage({params}: any) {
     ws.onmessage = (event: any) => {
       const json = JSON.parse(event.data);
       console.log(json);
-      setLocations(prevLocations => ({ 
-        ...prevLocations, 
-        [json.userId]: { lat: json.coordinates.lat, lng: json.coordinates.long }
-      }));
+      setLocations(prevLocations => {
+        const userLocations = prevLocations[json.userId] || [];
+        const updatedUserLocations = [...userLocations, json];
+        return { 
+          ...prevLocations, 
+          [json.userId]: updatedUserLocations
+        };
+      });
 
       setCenter({ lat: json.coordinates.lat, lng: json.coordinates.long });
       setZoom(18);
@@ -72,15 +74,20 @@ export default function MapPage({params}: any) {
         center={center}
         zoom={zoom}
       >
-        {Object.entries(locations).map(([userId, coordinates]) => (
-          <Marker
-            key={userId}
-            lat={coordinates.lat}
-            lng={coordinates.lng}
-            text={userId}
-          />
-        ))}
+        {Object.entries(locations).map(([userId, userLocations]) => {
+          const lastLocation = userLocations[userLocations.length - 1].coordinates;
+          console.log(userId, userLocations);
+          return (
+            <Marker
+              key={userId}
+              lat={lastLocation.lat}
+              lng={lastLocation.long}
+              text={userId}
+            />
+          )
+        })}
       </GoogleMapReact>
     </div>
   );
 }
+
