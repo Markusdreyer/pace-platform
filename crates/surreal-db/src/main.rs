@@ -1,3 +1,5 @@
+mod models;
+
 use serde::{Deserialize, Serialize};
 use surrealdb::engine::remote::ws::Ws;
 use surrealdb::opt::auth::Root;
@@ -30,6 +32,7 @@ struct Record {
 
 #[tokio::main]
 async fn main() -> surrealdb::Result<()> {
+    println!("main()");
     // Connect to the server
     let db = Surreal::new::<Ws>("127.0.0.1:8000").await?;
 
@@ -46,7 +49,7 @@ async fn main() -> surrealdb::Result<()> {
     // Create a new person with a random id
     let created: Record = db
         .create("person")
-        .content(Person {
+        .content(User {
             title: "Founder & CEO",
             name: Name {
                 first: "Tobie",
@@ -54,7 +57,7 @@ async fn main() -> surrealdb::Result<()> {
             },
             marketing: true,
         })
-    .await?;
+        .await?;
     dbg!(created);
 
     // Update a person record with a specific id

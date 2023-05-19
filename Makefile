@@ -1,4 +1,6 @@
+run-surrealdb:
+	cd crates/surrealdb && cargo run
 run-websockets:
-	cd backend/websockets && cargo run 
+	cd apps/websockets && cargo run
 deploy-websockets:
-	cd backend && flyctl deploy --config websockets/fly.toml --app websockets     
+	cd apps/websockets && flyctl deploy --config apps/websockets/fly.toml --app websockets

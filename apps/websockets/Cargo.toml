@@ -1,0 +1,12 @@
+[package]
+name = "websockets"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+actix-web-actors = { workspace = true }
+actix-web = { workspace = true }
+actix = { workspace = true }
+shared = { path = "../../crates/shared" }
+serde = { workspace = true, features = ["derive"] }
+tracing = "0.1.37"

@@ -1,0 +1,15 @@
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[package]
+name = "surreal-db"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+serde = { workspace = true, features = ["derive"] }
+actix-web = { workspace = true }
+thiserror = { version = "1.0.40" }
+surrealdb = "1.0.0-beta.9"
+tokio = { version = "1.28.1", features = ["macros", "rt-multi-thread"] }
+chrono = "0.4.24"
