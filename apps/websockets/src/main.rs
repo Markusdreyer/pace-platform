@@ -1,8 +1,8 @@
 use actix::{Actor, StreamHandler};
 use actix_web::{web, App, Error, HttpRequest, HttpResponse, HttpServer};
 use actix_web_actors::ws;
-use shared::log::configure_log;
-use shared::setup_config;
+use libs::log::configure_log;
+use libs::setup_config;
 use tracing::info;
 
 mod model;

@@ -7,6 +7,6 @@ edition = "2021"
 actix-web-actors = { workspace = true }
 actix-web = { workspace = true }
 actix = { workspace = true }
-shared = { path = "../../crates/shared" }
+libs = { workspace = true }
 serde = { workspace = true, features = ["derive"] }
 tracing = "0.1.37"

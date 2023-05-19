@@ -3,7 +3,7 @@ members = [
   "apps/*",
   "crates/*",
 ]
-exclude = ["apps/ios"]
+exclude = ["apps/ios", "apps/sveltekit"]
 
 [workspace.package]
 version = "0.1.0"
@@ -13,7 +13,7 @@ edition = "2021"
 [workspace.dependencies]
 # local dependencies
 surreal-db = { path = "./crates/surreal-db", version = "0.0.0" }
-shared = { path = "./crates/shared", version = "0.0.0" }
+libs = { path = "./crates/libs", version = "0.0.0" }
 
 # external dependencies
 serde = { version = "1.0.130", features = ["derive"] }

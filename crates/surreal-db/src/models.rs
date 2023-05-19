@@ -1,8 +1,10 @@
+use std::fmt;
+
 use chrono::{DateTime, Utc};
 use serde::Serialize;
 
 #[derive(Debug, Serialize)]
-struct Name {
+pub struct Name {
     /// "Tobias Goulden"
     first: String,
 
@@ -14,24 +16,24 @@ struct Name {
 }
 
 impl Name {
-    fn new(&mut self, first: String, last: Option<String>) -> Name {
+    pub fn new(first: String, last: Option<String>) -> Name {
         let mut name = Name {
             first,
             last,
             display: String::new(),
         };
 
-        self.update_display();
+        name.update_display();
 
         name
     }
 
-    fn set_first(&mut self, first: String) {
+    pub fn set_first(&mut self, first: String) {
         self.first = first;
         self.update_display();
     }
 
-    fn set_last(&mut self, last: Option<String>) {
+    pub fn set_last(&mut self, last: Option<String>) {
         self.last = last;
         self.update_display();
     }
@@ -39,13 +41,19 @@ impl Name {
     fn update_display(&mut self) {
         match &self.last {
             Some(last) => {
-                self.display = format!("{} {}", self.first, self.last.unwrap_or_default());
+                self.display = format!("{} {}", self.first, last.to_string());
             }
 
             None => {
                 self.display = self.first.clone();
             }
         }
+    }
+}
+
+impl fmt::Display for Name {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.display)
     }
 }
 
@@ -63,7 +71,7 @@ enum ImageSize {
 }
 
 #[derive(Debug, Serialize)]
-struct ImageUrl {
+pub struct ImageUrl {
     /// url to the image in it's original size
     original: String,
     sizes: Vec<(ImageSize, String)>,
@@ -85,7 +93,7 @@ impl ImageUrl {
 }
 
 #[derive(Debug, Serialize)]
-struct Image {
+pub struct Image {
     /// reference to the storage asset where the image is stored
     asset_id: Option<String>,
 
@@ -105,18 +113,18 @@ impl Image {
         }
     }
 
-    fn set_asset_id(&mut self, asset_id: String) {
+    fn set_asset_id(&mut self, asset_id: String) -> &mut Image {
         self.asset_id = Some(asset_id);
         self
     }
 
-    fn set_url(&mut self, url: String) {
+    fn set_url(&mut self, url: ImageUrl) -> &mut Image {
         self.url = url;
         self
     }
 
-    fn set_alt_text(&mut self, first: String) {
-        self.first = first;
+    fn set_alt_text(&mut self, first: String) -> &mut Image {
+        self.alt_text = Some(first);
         self
     }
 }
@@ -132,7 +140,7 @@ pub struct User {
 }
 
 impl User {
-    fn new() -> Self {
+    pub fn new() -> Self {
         let now = Utc::now();
 
         Self {
@@ -145,23 +153,23 @@ impl User {
         }
     }
 
-    fn set_name(&mut self, name: Name) {
+    pub fn set_name(&mut self, name: Name) -> &mut User {
         self.name = Some(name);
         self
     }
 
-    fn set_picture(&mut self, picture: Image) {
+    pub fn set_picture(&mut self, picture: Image) -> &mut User {
         self.picture = Some(picture);
         self
     }
 
-    fn set_is_online(&mut self, is_online: Boolean) {
+    pub fn set_is_online(&mut self, is_online: bool) -> &mut User {
         self.is_online = is_online;
         self.set_last_online(Utc::now());
         self
     }
 
-    fn set_last_online(&mut self, last_online: DateTime<Utc>) {
+    pub fn set_last_online(&mut self, last_online: DateTime<Utc>) -> &mut User {
         self.last_online = Some(last_online);
         self
     }

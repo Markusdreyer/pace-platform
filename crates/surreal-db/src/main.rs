@@ -1,28 +1,14 @@
 mod models;
+// use crate::models::Image;
+use crate::models::Name;
+use crate::models::User;
 
-use serde::{Deserialize, Serialize};
+use chrono::Utc;
+use serde::Deserialize;
 use surrealdb::engine::remote::ws::Ws;
 use surrealdb::opt::auth::Root;
 use surrealdb::sql::Thing;
 use surrealdb::Surreal;
-
-#[derive(Debug, Serialize)]
-struct Name<'a> {
-    first: &'a str,
-    last: &'a str,
-}
-
-#[derive(Debug, Serialize)]
-struct Person<'a> {
-    title: &'a str,
-    name: Name<'a>,
-    marketing: bool,
-}
-
-#[derive(Debug, Serialize)]
-struct Responsibility {
-    marketing: bool,
-}
 
 #[derive(Debug, Deserialize)]
 struct Record {
@@ -46,37 +32,31 @@ async fn main() -> surrealdb::Result<()> {
     // Select a specific namespace / database
     db.use_ns("test").use_db("test").await?;
 
+    let name = Name::new("Tobias".to_string(), Some("Schultz".to_string()));
+    let mut user_new = User::new();
+    let user = user_new.set_name(name).set_last_online(Utc::now());
+
     // Create a new person with a random id
-    let created: Record = db
-        .create("person")
-        .content(User {
-            title: "Founder & CEO",
-            name: Name {
-                first: "Tobie",
-                last: "Morgan Hitchcock",
-            },
-            marketing: true,
-        })
-        .await?;
+    let created: Record = db.create("user").content(user).await?;
     dbg!(created);
 
-    // Update a person record with a specific id
-    let updated: Record = db
-        .update(("person", "jaime"))
-        .merge(Responsibility { marketing: true })
-        .await?;
-    dbg!(updated);
+    // // Update a person record with a specific id
+    // let updated: Record = db
+    //     .update(("person", "jaime"))
+    //     .merge(Responsibility { marketing: true })
+    //     .await?;
+    // dbg!(updated);
 
     // Select all people records
-    let people: Vec<Record> = db.select("person").await?;
-    dbg!(people);
+    let users: Vec<Record> = db.select("users").await?;
+    dbg!(users);
 
     // Perform a custom advanced query
-    let groups = db
-        .query("SELECT marketing, count() FROM type::table($table) GROUP BY marketing")
-        .bind(("table", "person"))
-        .await?;
-    dbg!(groups);
+    // let groups = db
+    //     .query("SELECT marketing, count() FROM type::table($table) GROUP BY marketing")
+    //     .bind(("table", "person"))
+    //     .await?;
+    // dbg!(groups);
 
     Ok(())
 }
