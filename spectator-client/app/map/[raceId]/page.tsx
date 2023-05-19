@@ -1,6 +1,6 @@
 'use client';
 
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import GoogleMapReact from 'google-map-react';
 import 'tailwindcss/tailwind.css';
 
@@ -31,10 +31,9 @@ const LOCAL_URL  = 'ws://localhost:8080/';
 
 export default function MapPage({params}: any) {
   const raceId = params.raceId
-  const [locations, setLocations] = useState<UserLocations>({});
+  const [locations, setLocations] = useState<UserLocations>(Object.create(null));
   const [center, setCenter] = useState({ lat: 0, lng: 0 });
   const [zoom, setZoom] = useState(0);
-  const ws = new WebSocket(LOCAL_URL + raceId);
 
   useEffect(() => {
     const ws = new WebSocket(LOCAL_URL + raceId);
@@ -63,8 +62,8 @@ export default function MapPage({params}: any) {
       ws.close();
       console.log("websocket connection closed");
     }
-  }, [raceId, locations]);
-  
+  }, [raceId]);
+
   return (
     <div style={{ height: '100vh', width: '100%' }}>
       <GoogleMapReact
@@ -76,7 +75,6 @@ export default function MapPage({params}: any) {
       >
         {Object.entries(locations).map(([userId, userLocations]) => {
           const lastLocation = userLocations[userLocations.length - 1].coordinates;
-          console.log(userId, userLocations);
           return (
             <Marker
               key={userId}
@@ -90,4 +88,3 @@ export default function MapPage({params}: any) {
     </div>
   );
 }
-
