@@ -1,4 +1,5 @@
 use actix::{Actor, Addr};
+use actix_cors::Cors;
 use actix_web::web::{Data, Path, Payload};
 use actix_web::{get, App, Error, HttpRequest, HttpResponse, HttpServer};
 use actix_web_actors::ws;
@@ -23,7 +24,9 @@ async fn main() -> std::io::Result<()> {
     info!("Starting server");
 
     HttpServer::new(move || {
+        let cors = Cors::permissive();
         App::new()
+            .wrap(cors)
             .service(establish_connection)
             .data(race_server.clone())
     })
