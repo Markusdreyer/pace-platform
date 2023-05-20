@@ -20,7 +20,7 @@ struct Record {
 async fn main() -> surrealdb::Result<()> {
     println!("main()");
     // Connect to the server
-    let db = Surreal::new::<Ws>("127.0.0.1:8000").await?;
+    let db = Surreal::new::<Ws>("127.0.0.1:8080").await?;
 
     // Signin as a namespace, database, or root user
     db.signin(Root {

@@ -27,12 +27,13 @@ impl Name {
 
         name
     }
-
+    #[allow(dead_code)]
     pub fn set_first(&mut self, first: String) {
         self.first = first;
         self.update_display();
     }
 
+    #[allow(dead_code)]
     pub fn set_last(&mut self, last: Option<String>) {
         self.last = last;
         self.update_display();
@@ -58,6 +59,7 @@ impl fmt::Display for Name {
 }
 
 #[derive(Debug, Serialize)]
+#[allow(dead_code)]
 enum ImageSize {
     Lqip,
     W50,
@@ -78,6 +80,8 @@ pub struct ImageUrl {
 }
 
 impl ImageUrl {
+    #[allow(dead_code)]
+
     fn new(original: String) -> Self {
         // @todo parse and format https://cdn/:asset_id/:size's onto the each size
         Self {
@@ -85,6 +89,7 @@ impl ImageUrl {
             sizes: Vec::new(),
         }
     }
+    #[allow(dead_code)]
 
     fn with_size(mut self, size: ImageSize, url: String) -> Self {
         self.sizes.push((size, url));
@@ -105,7 +110,8 @@ pub struct Image {
 }
 
 impl Image {
-    fn new(original_url: String, asset_id: Option<String>, alt_text: Option<String>) -> Image {
+    #[allow(dead_code)]
+    fn new(original_url: String, _asset_id: Option<String>, alt_text: Option<String>) -> Image {
         Image {
             asset_id: None,
             url: ImageUrl::new(original_url.to_string()),
@@ -113,16 +119,19 @@ impl Image {
         }
     }
 
+    #[allow(dead_code)]
     fn set_asset_id(&mut self, asset_id: String) -> &mut Image {
         self.asset_id = Some(asset_id);
         self
     }
 
+    #[allow(dead_code)]
     fn set_url(&mut self, url: ImageUrl) -> &mut Image {
         self.url = url;
         self
     }
 
+    #[allow(dead_code)]
     fn set_alt_text(&mut self, first: String) -> &mut Image {
         self.alt_text = Some(first);
         self
@@ -158,11 +167,13 @@ impl User {
         self
     }
 
+    #[allow(dead_code)]
     pub fn set_picture(&mut self, picture: Image) -> &mut User {
         self.picture = Some(picture);
         self
     }
 
+    #[allow(dead_code)]
     pub fn set_is_online(&mut self, is_online: bool) -> &mut User {
         self.is_online = is_online;
         self.set_last_online(Utc::now());
