@@ -1,8 +1,8 @@
 use actix::{Message, Recipient};
 use actix_web::web::Bytes;
 use actix_web_actors::ws;
+use libs::WebSocketError;
 use serde::{Deserialize, Serialize};
-use shared::WebSocketError;
 
 #[derive(Message)]
 #[rtype(result = "()")]

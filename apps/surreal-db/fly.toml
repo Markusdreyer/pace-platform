@@ -1,10 +1,14 @@
-# fly.toml app configuration file generated for pace-surreal on 2023-05-15T19:19:32+07:00
+# fly.toml app configuration file generated for pace-surrealdb on 2023-05-20T08:05:42+07:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = "pace-surreal"
+app = "pace-surrealdb"
 primary_region = "arn"
+
+[[mounts]]
+  source = "data"
+  destination = "/data"
 
 [http_service]
   internal_port = 8000

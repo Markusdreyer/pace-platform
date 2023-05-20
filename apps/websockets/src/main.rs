@@ -1,14 +1,14 @@
 use actix::{Actor, Addr};
 use actix_cors::Cors;
-use actix_web::web::{Data, Path, Payload};
+use actix_web::web::{Data, Payload};
 use actix_web::{get, App, Error, HttpRequest, HttpResponse, HttpServer};
 use actix_web_actors::ws;
-use actors::race::Race;
-use shared::log::configure_log;
-use shared::setup_config;
+use libs::log::configure_log;
+use libs::setup_config;
 use tracing::info;
 use uuid::Uuid;
 
+use crate::actors::race::Race;
 use crate::actors::ws::WsConnection;
 
 mod actors;
@@ -28,7 +28,7 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .wrap(cors)
             .service(establish_connection)
-            .data(race_server.clone())
+            .app_data(race_server.clone())
     })
     .bind("0.0.0.0:8080")?
     .run()
@@ -39,12 +39,13 @@ async fn main() -> std::io::Result<()> {
 pub async fn establish_connection(
     req: HttpRequest,
     stream: Payload,
-    Path(race_id): Path<String>,
     srv: Data<Addr<Race>>,
 ) -> Result<HttpResponse, Error> {
     info!(message = "new connection", action = "establish_connection");
+    let race_id: String = req.match_info().get("race_id").unwrap().parse().unwrap();
+
     let user_id = Uuid::new_v4().to_string();
-    let ws = WsConnection::new(user_id, race_id, srv.get_ref().clone());
+    let ws = WsConnection::new(user_id, race_id.clone(), srv.get_ref().clone());
     let resp = ws::start(ws, &req, stream)?;
     Ok(resp)
 }

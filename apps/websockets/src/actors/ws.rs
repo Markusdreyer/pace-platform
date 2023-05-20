@@ -1,5 +1,5 @@
 use actix::{
-    fut, Actor, ActorContext, ActorFuture, Addr, ContextFutureSpawner, Handler, Running,
+    fut, Actor, ActorContext, ActorFutureExt, Addr, ContextFutureSpawner, Handler, Running,
     StreamHandler, WrapFuture,
 };
 use actix::{AsyncContext, Message};
@@ -121,10 +121,11 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for WsConnection {
             Ok(ws::Message::Nop) => (),
             Ok(ws::Message::Text(text)) => {
                 info!(message = "text message", action = "handle", ?text);
-                let location_update_message: LocationUpdateMessage = match text.try_into() {
-                    Ok(message) => message,
-                    Err(e) => return ctx.text(e.to_json().to_string()),
-                };
+                let location_update_message: LocationUpdateMessage =
+                    match text.to_string().try_into() {
+                        Ok(message) => message,
+                        Err(e) => return ctx.text(e.to_json().to_string()),
+                    };
                 self.race_addr.do_send(location_update_message);
             }
             Err(e) => panic!("{}", e),

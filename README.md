@@ -24,7 +24,7 @@ Run services by using the relevant `make` alias, e.g.:
 make run-websockets
 ```
 
-That's it! You should now be able to compile and run the project on your local machine. 
+That's it! You should now be able to compile and run the project on your local machine.
 
 ### Creating new backend services
 If you want to add another service, for example `test-service`, run the following commands:
@@ -48,7 +48,7 @@ members = [
 If the service is not added to this file, then the Rust compiler can not find it and will not compile it.
 
 ## Deployment
-This project uses [fly.io](https://fly.io/) to host its backend services. As the services are still in their infancy, there is no CD pipeline setup, but this will come shortly after the services have stabilized somewhat. For now, manual deployments are the way to go, but fear not; it's super simple. 
+This project uses [fly.io](https://fly.io/) to host its backend services. As the services are still in their infancy, there is no CD pipeline setup, but this will come shortly after the services have stabilized somewhat. For now, manual deployments are the way to go, but fear not; it's super simple.
 
 **Install the flyctl CLI:**
 ```
@@ -72,3 +72,16 @@ This step uses an alias in the Makefile to tidy up the deployment command, but w
 
 ## App
 Contains the native iOS app code. This is currently a very simple app showing the current location of the user on a map. The app also sends this location data to the pace backend with websockets.
+
+
+## Config
+To run every app and crate in the workspace in one multiplexer terminal window, consider using zellij
+
+```sh
+cargo install --locked zellij
+```
+
+If experiencing errors, if installed through rustup, please try running:
+```sh
+rustup update
+```

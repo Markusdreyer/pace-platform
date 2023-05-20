@@ -1,0 +1,23 @@
+[workspace]
+members = [
+  "apps/*",
+  "crates/*",
+]
+exclude = ["apps/ios", "apps/sveltekit", "apps/next"]
+
+[workspace.package]
+version = "0.1.0"
+rust-version = "1.69"
+edition = "2021"
+
+[workspace.dependencies]
+# local dependencies
+surreal-db = { path = "./apps/surreal-db", version = "0.0.0" }
+libs = { path = "./crates/libs", version = "0.0.0" }
+
+# external dependencies
+actix = { version = "0.13.0" }
+actix-web = {version = "4.3.1" }
+actix-web-actors = {version = "4.2.0" }
+serde = { version = "1.0.130", features = ["derive"] }
+serde_json = "1.0.70"

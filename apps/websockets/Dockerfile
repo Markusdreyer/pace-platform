@@ -1,7 +1,14 @@
 FROM lukemathwalker/cargo-chef:latest AS chef
 WORKDIR app
 
-FROM chef AS planner
+RUN cargo new websockets \
+    && cargo new libs --lib
+COPY websockets/Cargo.toml websockets/Cargo.toml
+COPY libs/Cargo.toml libs/Cargo.toml
+COPY Cargo.toml .
+COPY Cargo.lock .
+
+# Build application
 COPY . .
 RUN cargo chef prepare --bin websockets
 
