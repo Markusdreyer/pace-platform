@@ -19,8 +19,12 @@ struct Record {
 #[tokio::main]
 async fn main() -> surrealdb::Result<()> {
     println!("main()");
+
+    let ws_url_dev = "ws://localhost:8080".to_string();
+    let ws_url_prod = "ws://localhost:8080".to_string();
+
     // Connect to the server
-    let db = Surreal::new::<Ws>("127.0.0.1:8080").await?;
+    let db = Surreal::new::<Ws>(ws_url_dev).await?;
 
     // Signin as a namespace, database, or root user
     db.signin(Root {
