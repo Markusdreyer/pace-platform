@@ -1,0 +1,32 @@
+layout {
+    pane split_direction="vertical" {
+      pane split_direction="horizontal" {
+        pane {
+          command "make"
+          args "build-libs"
+        }
+        pane {
+          command "make"
+          args "build-surrealdb"
+        }
+        pane {
+          command "make"
+          args "build-websockets"
+        }
+      }
+
+      pane {
+        pane {
+          pane {
+            command "make"
+            args "run-surrealdb"
+          }
+
+          pane {
+            command "make"
+            args "run-websockets"
+          }
+        }
+      }
+    }
+}

@@ -1,3 +1,7 @@
+# build and run everything
+start:
+	zellij --layout ./.config/zellij_layout.kdl
+
 # build
 build-libs:
 	cd crates/libs && cargo build

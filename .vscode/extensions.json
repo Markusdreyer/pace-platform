@@ -2,5 +2,6 @@
   "recommendations": [
     "github.vscode-github-actions",
     "rust-lang.rust-analyzer",
+    "kdl-org.kdl"
   ]
 }
