@@ -3,20 +3,19 @@ use actix_cors::Cors;
 use actix_web::web::{Data, Payload};
 use actix_web::{get, App, Error, HttpRequest, HttpResponse, HttpServer};
 use actix_web_actors::ws;
-use libs::log::configure_log;
-use libs::setup_config;
 use tracing::info;
 use uuid::Uuid;
 
+mod actors;
 use crate::actors::race::Race;
 use crate::actors::ws::WsConnection;
 
-mod actors;
-mod model;
+mod utils;
+use crate::utils::{configure_log, setup_config, Settings};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    let config: model::Settings = setup_config().expect("could not setup config");
+    let config: Settings = setup_config().expect("could not setup config");
     configure_log(config.log.level);
 
     let race_server = Race::default().start();

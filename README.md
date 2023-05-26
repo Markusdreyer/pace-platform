@@ -111,7 +111,7 @@ This step uses an alias in the Makefile to tidy up the deployment command, but w
 Contains the native iOS app code. This is currently a very simple app showing the current location of the user on a map. The app also sends this location data to the pace backend with websockets.
 
 
-## Config
+## DX
 To run every app and crate in the workspace in one multiplexer terminal window, consider using zellij
 
 ```sh

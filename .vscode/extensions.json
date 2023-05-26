@@ -2,6 +2,7 @@
   "recommendations": [
     "github.vscode-github-actions",
     "rust-lang.rust-analyzer",
-    "kdl-org.kdl"
+    "kdl-org.kdl",
+    "mathe42.surrealql"
   ]
 }

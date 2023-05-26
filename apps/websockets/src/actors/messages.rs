@@ -1,8 +1,10 @@
 use actix::{Message, Recipient};
 use actix_web::web::Bytes;
 use actix_web_actors::ws;
-use libs::WebSocketError;
+
 use serde::{Deserialize, Serialize};
+
+use crate::utils::WebSocketError;
 
 #[derive(Message)]
 #[rtype(result = "()")]

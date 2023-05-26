@@ -1,11 +1,11 @@
 use std::fmt;
 
 use chrono::{DateTime, Utc};
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use super::Image;
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct User {
     created_at: DateTime<Utc>,
     updated_at: DateTime<Utc>,
@@ -29,31 +29,31 @@ impl User {
         }
     }
 
-    pub fn set_name(&mut self, name: Name) -> &mut User {
+    pub fn set_name(mut self, name: Name) -> Self {
         self.name = Some(name);
         self
     }
 
     #[allow(dead_code)]
-    pub fn set_picture(&mut self, picture: Image) -> &mut User {
+    pub fn set_picture(mut self, picture: Image) -> Self {
         self.picture = Some(picture);
         self
     }
 
     #[allow(dead_code)]
-    pub fn set_is_online(&mut self, is_online: bool) -> &mut User {
+    pub fn set_is_online(mut self, is_online: bool) -> User {
         self.is_online = is_online;
-        self.set_last_online(Utc::now());
-        self
+        let selfish = self.set_last_online(Utc::now());
+        selfish
     }
 
-    pub fn set_last_online(&mut self, last_online: DateTime<Utc>) -> &mut User {
+    pub fn set_last_online(mut self, last_online: DateTime<Utc>) -> Self {
         self.last_online = Some(last_online);
         self
     }
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Name {
     /// "Tobias Goulden"
     first: String,

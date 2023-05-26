@@ -1,5 +1,7 @@
+pub mod db;
 pub mod image;
 pub mod user;
 
-pub use image::{Image, ImageSize, ImageUrl};
-pub use user::{Name, User};
+pub use db::*;
+pub use image::*;
+pub use user::*;

@@ -1,6 +1,6 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[allow(dead_code)]
 pub enum ImageSize {
     Lqip,
@@ -14,7 +14,7 @@ pub enum ImageSize {
     W2500,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ImageUrl {
     /// url to the image in it's original size
     original: String,
@@ -39,7 +39,7 @@ impl ImageUrl {
     }
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Image {
     /// reference to the storage asset where the image is stored
     asset_id: Option<String>,
