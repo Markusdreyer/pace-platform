@@ -6,7 +6,7 @@ publish = false
 
 [dependencies]
 actix-web = { workspace = true }
-axum = { version = "0.6.18", features = ["macros"] }
+axum = { version = "0.6.16", features = ["macros", "full"] }
 axum-macros = "0.3.7"
 chrono = "0.4.24"
 config = { workspace = true }

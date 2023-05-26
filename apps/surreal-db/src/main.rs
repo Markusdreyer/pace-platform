@@ -2,10 +2,10 @@ mod db_client;
 mod models;
 
 use axum::{
-    error_handling::HandleErrorLayer,
-    extract::{Query, State},
-    http::StatusCode,
-    response::Result,
+    body::Bytes,
+    extract::{MatchedPath, Query, State},
+    http::{HeaderMap, Request, StatusCode},
+    response::{Response, Result},
     routing::{get, post},
     Json, Router,
 };
@@ -14,29 +14,26 @@ use models::{user::User, Name};
 use serde::Deserialize;
 use std::{net::SocketAddr, time::Duration};
 use surrealdb::{engine::remote::ws::Client, Surreal};
-use tower::{BoxError, ServiceBuilder};
-use tower_http::trace::TraceLayer;
-use tracing::info;
+use tower_http::{classify::ServerErrorsFailureClass, trace::TraceLayer};
+use tracing::{info, info_span, Span};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
-use utils::{configure_log, setup_config};
 
 mod utils;
-
 use crate::models::DbResource;
-use crate::utils::Settings;
 
 #[tokio::main]
 async fn main() {
-    let config: Settings = setup_config().expect("could not setup config");
-    configure_log(config.log.level);
     info!("starting axum server");
     // initialize tracing
     tracing_subscriber::registry()
-        // .with(
-        //     tracing_subscriber::EnvFilter::try_from_default_env()
-        //         .unwrap_or_else(|_| "users=debug,tower_http=debug".into()),
-        // )
-        // .with(tracing_subscriber::fmt::layer())
+        .with(
+            tracing_subscriber::EnvFilter::try_from_default_env().unwrap_or_else(|_| {
+                // axum logs rejections from built-in extractors with the `axum::rejection`
+                // target, at `TRACE` level. `axum::rejection=trace` enables showing those events
+                "example_tracing_aka_logging=debug,tower_http=debug,axum::rejection=trace".into()
+            }),
+        )
+        .with(tracing_subscriber::fmt::layer())
         .init();
     info!("tracing initialized");
 
@@ -65,33 +62,57 @@ async fn main() {
         .route("/user/create", post(create_user))
         // Add middleware to all routes
         .layer(
-            ServiceBuilder::new()
-                .layer(HandleErrorLayer::new(|error: BoxError| async move {
-                    if error.is::<tower::timeout::error::Elapsed>() {
-                        Ok(StatusCode::REQUEST_TIMEOUT)
-                    } else {
-                        Err((
-                            StatusCode::INTERNAL_SERVER_ERROR,
-                            format!("Unhandled internal error: {}", error),
-                        ))
-                    }
-                }))
-                .timeout(Duration::from_secs(10))
-                .layer(TraceLayer::new_for_http())
-                .into_inner(),
+            TraceLayer::new_for_http()
+                .make_span_with(|request: &Request<_>| {
+                    // Log the matched route's path (with placeholders not filled in).
+                    // Use request.uri() or OriginalUri if you want the real path.
+                    let matched_path = request
+                        .extensions()
+                        .get::<MatchedPath>()
+                        .map(MatchedPath::as_str);
+
+                    info_span!(
+                        "http_request",
+                        method = ?request.method(),
+                        matched_path,
+                        some_other_field = tracing::field::Empty,
+                    )
+                })
+                .on_request(|_request: &Request<_>, _span: &Span| {
+                    // You can use `_span.record("some_other_field", value)` in one of these
+                    // closures to attach a value to the initially empty field in the info_span
+                    // created above.
+                })
+                .on_response(|_response: &Response, _latency: Duration, _span: &Span| {
+                    // ...
+                })
+                .on_body_chunk(|_chunk: &Bytes, _latency: Duration, _span: &Span| {
+                    // ...
+                })
+                .on_eos(
+                    |_trailers: Option<&HeaderMap>, _stream_duration: Duration, _span: &Span| {
+                        // ...
+                    },
+                )
+                .on_failure(
+                    |_error: ServerErrorsFailureClass, _latency: Duration, _span: &Span| {
+                        // ...
+                    },
+                ),
         )
         .with_state(db.client);
 
-    // run our app with hyper
-    // `axum::Server` is a re-export of `hyper::Server`
-    let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
-    tracing::debug!("listening on {}", addr);
+    let listener = TcpListener::bind("127.0.0.1:3000").await.unwrap();
+    tracing::debug!("listening on {}", listener.local_addr().unwrap());
+    axum::serve(listener, app).await.unwrap();
 
-    // let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
-    axum::Server::bind(&addr)
-        .serve(app.into_make_service())
-        .await
-        .unwrap();
+    // let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
+    // tracing::debug!("listening on {}", addr);
+
+    // axum::Server::bind(&addr)
+    //     .serve(app.into_make_service())
+    //     .await
+    //     .unwrap();
 }
 
 // basic handler that responds with a static string
@@ -107,8 +128,7 @@ async fn create_user(
     Json(payload): Json<User>,
 ) -> Result<Json<DbRecord>, String> {
     // insert your application logic here
-    let config: Settings = setup_config().expect("could not setup config");
-    configure_log(config.log.level);
+
     dbg!(&payload);
 
     let user = User::new()
