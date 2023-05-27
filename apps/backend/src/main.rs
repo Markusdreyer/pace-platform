@@ -12,14 +12,21 @@ use axum::{
 use db_client::{Db, DbRecord};
 use models::{user::User, Name};
 use serde::Deserialize;
-use std::{net::SocketAddr, time::Duration};
+use std::{net::SocketAddr, sync::Arc, time::Duration};
 use surrealdb::{engine::remote::ws::Client, Surreal};
 use tower_http::{classify::ServerErrorsFailureClass, trace::TraceLayer};
 use tracing::{info, info_span, Span};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
-
+use utoipa::{
+    openapi::security::{ApiKey, ApiKeyValue, SecurityScheme},
+    Modify, OpenApi,
+};
+use utoipa_swagger_ui::SwaggerUi;
 mod utils;
 use crate::models::DbResource;
+
+// #[derive(OpenApi)]
+// struct ApiDoc;
 
 #[tokio::main]
 async fn main() {
@@ -56,63 +63,20 @@ async fn main() {
     // build our application with a route
 
     let app = Router::new()
+        .route("/", get(root))
         // `GET /` goes to `root`
-        .route("/user/list", get(root))
+        .route("/user/list", get(get_users))
         // `POST /users` goes to `create_user`
         .route("/user/create", post(create_user))
-        // Add middleware to all routes
-        .layer(
-            TraceLayer::new_for_http()
-                .make_span_with(|request: &Request<_>| {
-                    // Log the matched route's path (with placeholders not filled in).
-                    // Use request.uri() or OriginalUri if you want the real path.
-                    let matched_path = request
-                        .extensions()
-                        .get::<MatchedPath>()
-                        .map(MatchedPath::as_str);
-
-                    info_span!(
-                        "http_request",
-                        method = ?request.method(),
-                        matched_path,
-                        some_other_field = tracing::field::Empty,
-                    )
-                })
-                .on_request(|_request: &Request<_>, _span: &Span| {
-                    // You can use `_span.record("some_other_field", value)` in one of these
-                    // closures to attach a value to the initially empty field in the info_span
-                    // created above.
-                })
-                .on_response(|_response: &Response, _latency: Duration, _span: &Span| {
-                    // ...
-                })
-                .on_body_chunk(|_chunk: &Bytes, _latency: Duration, _span: &Span| {
-                    // ...
-                })
-                .on_eos(
-                    |_trailers: Option<&HeaderMap>, _stream_duration: Duration, _span: &Span| {
-                        // ...
-                    },
-                )
-                .on_failure(
-                    |_error: ServerErrorsFailureClass, _latency: Duration, _span: &Span| {
-                        // ...
-                    },
-                ),
-        )
         .with_state(db.client);
 
-    let listener = TcpListener::bind("127.0.0.1:3000").await.unwrap();
-    tracing::debug!("listening on {}", listener.local_addr().unwrap());
-    axum::serve(listener, app).await.unwrap();
+    let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
+    tracing::debug!("listening on {}", addr);
 
-    // let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
-    // tracing::debug!("listening on {}", addr);
-
-    // axum::Server::bind(&addr)
-    //     .serve(app.into_make_service())
-    //     .await
-    //     .unwrap();
+    axum::Server::bind(&addr)
+        .serve(app.into_make_service())
+        .await
+        .unwrap();
 }
 
 // basic handler that responds with a static string

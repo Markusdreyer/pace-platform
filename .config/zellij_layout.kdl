@@ -7,7 +7,7 @@ layout {
         }
         pane {
           command "make"
-          args "build-surrealdb"
+          args "build-backend"
         }
         pane {
           command "make"
@@ -19,7 +19,7 @@ layout {
         pane {
           pane {
             command "make"
-            args "run-surrealdb"
+            args "run-backend"
           }
 
           pane {

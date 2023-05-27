@@ -1,7 +1,7 @@
 {
     "rust-analyzer.linkedProjects": [
         "./apps/websockets/Cargo.toml",
-        "./apps/surreal-db/Cargo.toml",
+        "./apps/backend/Cargo.toml",
         "./crates/libs/Cargo.toml",
     ]
 }
