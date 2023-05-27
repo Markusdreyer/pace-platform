@@ -24,51 +24,37 @@ use utoipa::{
 use utoipa_swagger_ui::SwaggerUi;
 mod utils;
 use crate::models::DbResource;
-use log::{info, warn};
+use log;
 // #[derive(OpenApi)]
 // struct ApiDoc;
 
 #[tokio::main]
 async fn main() {
-    println!("println!(starting axum server)");
     env_logger::init();
+    println!("main()");
 
-    info!("This is an info message");
-    warn!("This is a warning message");
+    let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
+    println!("listening on {addr}");
 
+    axum::Server::bind(&addr)
+        .serve(app().await.into_make_service())
+        .await
+        .unwrap();
+}
+
+async fn app() -> Router {
     let db = match Db::new().await {
         Ok(db) => db,
         Err(err) => {
-            tracing::error!("db error: {:?}", err);
-            return;
+            panic!("Error: {}", err);
         }
     };
 
-    // ✅ connect db client
-    // ✅ pass db client to route state
-    // ✅ use db client in route handler to get user
-    // 4. use db client in route handler to create user
-    // 5. test get users
-    // 6. test get users with pagination
-    // 7. test create users
-    // 8. save api calls
-    // build our application with a route
-
-    let app = Router::new()
+    Router::new()
         .route("/", get(root))
-        // `GET /` goes to `root`
         .route("/user/list", get(get_users))
-        // `POST /users` goes to `create_user`
         .route("/user/create", post(create_user))
-        .with_state(db.client);
-
-    let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
-    tracing::debug!("listening on {}", addr);
-
-    axum::Server::bind(&addr)
-        .serve(app.into_make_service())
-        .await
-        .unwrap();
+        .with_state(db.client)
 }
 
 // basic handler that responds with a static string
