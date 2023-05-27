@@ -30,7 +30,8 @@ use crate::models::DbResource;
 
 #[tokio::main]
 async fn main() {
-    info!("starting axum server");
+    info!("info!(starting axum server)");
+    println!("println!(starting axum server)");
     // initialize tracing
     tracing_subscriber::registry()
         .with(
