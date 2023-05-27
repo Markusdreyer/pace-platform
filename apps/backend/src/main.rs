@@ -3,20 +3,16 @@ mod models;
 
 use axum::{
     extract::{Query, State},
-    http::{StatusCode},
-    response::{Result},
+    http::StatusCode,
+    response::Result,
     routing::{get, post},
     Json, Router,
 };
 use db_client::{Db, DbRecord};
-use models::{user::User, Name};
+use models::{user::User, ApiUserCreateRequest, Name};
 use serde::Deserialize;
-use std::{net::SocketAddr};
+use std::net::SocketAddr;
 use surrealdb::{engine::remote::ws::Client, Surreal};
-
-
-
-
 
 mod utils;
 use crate::models::DbResource;
@@ -66,15 +62,14 @@ async fn create_user(
     // this argument tells axum to parse the request body
     // as JSON into a `CreateUser` type
     State(db): State<Surreal<Client>>,
-    Json(payload): Json<User>,
+    Json(payload): Json<ApiUserCreateRequest>,
 ) -> Result<Json<DbRecord>, String> {
     // insert your application logic here
 
     dbg!(&payload);
 
-    let user = User::new()
-        .set_name(Name::new("Tobias".to_string(), Some("Test".to_string())))
-        .set_is_online(true);
+    let user = User::new();
+
     dbg!(&user);
 
     match db

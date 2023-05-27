@@ -43,7 +43,7 @@ impl User {
     #[allow(dead_code)]
     pub fn set_is_online(mut self, is_online: bool) -> User {
         self.is_online = is_online;
-        
+
         self.set_last_online(Utc::now())
     }
 
@@ -51,6 +51,13 @@ impl User {
         self.last_online = Some(last_online);
         self
     }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ApiUserCreateRequest {
+    name: Option<Name>,
+    picture: Option<Image>,
+    is_online: Option<bool>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -74,9 +81,9 @@ impl Name {
         };
 
         name.update_display();
-
         name
     }
+
     #[allow(dead_code)]
     pub fn set_first(&mut self, first: String) {
         self.first = first;
