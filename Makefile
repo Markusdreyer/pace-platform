@@ -29,12 +29,14 @@ build-all-websockets:
 # run
 run-backend:
 	cd apps/backend && cargo run
+run-surrealdb:
+	docker run --rm --pull always -p 8000:8000 -v data:/mydata surrealdb/surrealdb:latest start --log trace --user root --pass root  file://data/srdb.db
 run-websockets:
 	cd apps/websockets && cargo run
 
 # run all
 run:
-	make build && make run-backend && make run-websockets
+	make build && make run-backend && make run-surrealdb && make run-websockets
 
 # run all for backend
 run-all-backend:

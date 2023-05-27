@@ -43,6 +43,7 @@ async fn main() {
 }
 
 async fn app() -> Router {
+    println!("app()");
     let db = match Db::new().await {
         Ok(db) => db,
         Err(err) => {
@@ -50,6 +51,7 @@ async fn app() -> Router {
         }
     };
 
+    println!("router init()");
     Router::new()
         .route("/", get(root))
         .route("/user/list", get(get_users))
@@ -59,6 +61,7 @@ async fn app() -> Router {
 
 // basic handler that responds with a static string
 async fn root() -> &'static str {
+    println!("root()");
     "works 💪"
 }
 

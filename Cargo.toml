@@ -11,10 +11,8 @@ rust-version = "1.69"
 edition = "2021"
 
 [workspace.dependencies]
-actix = { version = "0.13.0" }
-actix-web = {version = "4.3.1" }
-actix-web-actors = {version = "4.2.0" }
-config = { version = "0.13" }
 libs = { path = "./crates/libs", version = "0.0.0" }
 serde = { version = "1.0.130", features = ["derive"] }
 serde_json = "1.0.70"
+thiserror = "1.0.40"
+anyhow = "1.0.71"

@@ -3,6 +3,8 @@
     "github.vscode-github-actions",
     "rust-lang.rust-analyzer",
     "kdl-org.kdl",
-    "mathe42.surrealql"
+    "mathe42.surrealql",
+    "vadimcn.vscode-lldb",
+    "usernamehw.errorlens"
   ]
 }

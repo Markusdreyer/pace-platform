@@ -17,6 +17,11 @@ layout {
             command "make"
             args "run-backend"
           }
+
+          pane {
+            command "make"
+            args "run-surrealdb"
+          }
         }
       }
     }

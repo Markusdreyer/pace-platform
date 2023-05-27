@@ -26,6 +26,11 @@ layout {
             command "make"
             args "run-websockets"
           }
+
+          pane {
+            command "make"
+            args "run-surrealdb"
+          }
         }
       }
     }
