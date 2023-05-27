@@ -56,7 +56,7 @@ impl Image {
     fn new(original_url: String, _asset_id: Option<String>, alt_text: Option<String>) -> Image {
         Image {
             asset_id: None,
-            url: ImageUrl::new(original_url.to_string()),
+            url: ImageUrl::new(original_url),
             alt_text,
         }
     }

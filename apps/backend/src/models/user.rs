@@ -43,8 +43,8 @@ impl User {
     #[allow(dead_code)]
     pub fn set_is_online(mut self, is_online: bool) -> User {
         self.is_online = is_online;
-        let selfish = self.set_last_online(Utc::now());
-        selfish
+        
+        self.set_last_online(Utc::now())
     }
 
     pub fn set_last_online(mut self, last_online: DateTime<Utc>) -> Self {
@@ -92,7 +92,7 @@ impl Name {
     fn update_display(&mut self) {
         match &self.last {
             Some(last) => {
-                self.display = format!("{} {}", self.first, last.to_string());
+                self.display = format!("{} {}", self.first, last);
             }
 
             None => {

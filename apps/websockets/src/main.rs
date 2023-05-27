@@ -44,7 +44,7 @@ pub async fn establish_connection(
     let race_id: String = req.match_info().get("race_id").unwrap().parse().unwrap();
 
     let user_id = Uuid::new_v4().to_string();
-    let ws = WsConnection::new(user_id, race_id.clone(), srv.get_ref().clone());
+    let ws = WsConnection::new(user_id, race_id, srv.get_ref().clone());
     let resp = ws::start(ws, &req, stream)?;
     Ok(resp)
 }

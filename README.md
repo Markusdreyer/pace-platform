@@ -1,43 +1,7 @@
 # Pace platform
 
-<details>
-    <summary>
-    What is Pace?
-    </summary>
-
-    (dump this context into ChatGPT to get better pace-specific answers)
-
-    Pace is a toolkit for organizing endurance races, used by athletes, organizers, and spectators.
-
-    Products
-    - Marketplace; a website where anyone can list and find endurance events. The goal is to grow Pace SEO and upsell Pace products on the side.
-    - Tracker; an app for tracking participants location in realtime. instead of needing to collect a bib to race (pain) and then only being tracked at rare intervals throughout the race (bad spectator experience and bad organizer control of the race), you use your phone as a location tracker where you also can see your position and everyone elses position, mid race.
-    - Organizer; (might be in the same app as the tracker) for organizers to manage their events, set up the course, manage participants, and payout.
-
-    Marketing plan
-    - Free: list your event on pace website for increased reach and better race insight for participants
-    - Free: use the tracker app with friends and family, without receiving payments
-
-    Business model
-    - If organizers wants to accept payments to their event on pace web, it costs 5% + payment processing fees (very roughly)
-    - If organizers wants to use the tracker, it costs 5% + payment processing fees (very roughly)
-
-    The features that will be built, in no particular order, are:
-    - realtime location tracker for many, many people (under development)
-    - digital course marking (simply a route on a map? watch? AR glasses? audio cues?)
-    - list your event
-    - accept payments and receive payouts
-    - participant management
-    - result lists
-    - a public api for organizers that wants to consume and display realtime race data, or perhaps media wants to stream events
-    - integration with physical equipment like time tracking systems
-    - a distributed, realtime cloud with high throughput and durability
-    - spectator view where you can give kudos to athletes mid-race
-    - spectator view where athletes can post, mid-race
-    - spectator view with realtime analytics of the athletes pace, heart rate, position trends
-</details>
-
 This repo contains all services related to the pace platform.
+
 ## pace-backend
 The pace backend is written in Rust with a monorepo approach using cargo workspace to structure the microservices.
 
@@ -124,3 +88,40 @@ rustup update
 ```
 
 
+
+<details>
+    <summary>
+    What is Pace?
+    </summary>
+
+    (dump this context into ChatGPT to get better pace-specific answers)
+
+    Pace is a toolkit for organizing endurance races, used by athletes, organizers, and spectators.
+
+    Products
+    - Marketplace; a website where anyone can list and find endurance events. The goal is to grow Pace SEO and upsell Pace products on the side.
+    - Tracker; an app for tracking participants location in realtime. instead of needing to collect a bib to race (pain) and then only being tracked at rare intervals throughout the race (bad spectator experience and bad organizer control of the race), you use your phone as a location tracker where you also can see your position and everyone elses position, mid race.
+    - Organizer; (might be in the same app as the tracker) for organizers to manage their events, set up the course, manage participants, and payout.
+
+    Marketing plan
+    - Free: list your event on pace website for increased reach and better race insight for participants
+    - Free: use the tracker app with friends and family, without receiving payments
+
+    Business model
+    - If organizers wants to accept payments to their event on pace web, it costs 5% + payment processing fees (very roughly)
+    - If organizers wants to use the tracker, it costs 5% + payment processing fees (very roughly)
+
+    The features that will be built, in no particular order, are:
+    - realtime location tracker for many, many people (under development)
+    - digital course marking (simply a route on a map? watch? AR glasses? audio cues?)
+    - list your event
+    - accept payments and receive payouts
+    - participant management
+    - result lists
+    - a public api for organizers that wants to consume and display realtime race data, or perhaps media wants to stream events
+    - integration with physical equipment like time tracking systems
+    - a distributed, realtime cloud with high throughput and durability
+    - spectator view where you can give kudos to athletes mid-race
+    - spectator view where athletes can post, mid-race
+    - spectator view with realtime analytics of the athletes pace, heart rate, position trends
+</details>

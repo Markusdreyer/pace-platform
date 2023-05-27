@@ -24,8 +24,7 @@ impl Db {
 
         // Connect to the server
         let client = Surreal::new::<Ws>(ws_url_dev)
-            .await
-            .map_err(|err| surrealdb::Error::from(err))?;
+            .await?;
 
         println!("Connected to {}", ws_url_dev);
 

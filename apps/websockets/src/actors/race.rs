@@ -17,7 +17,7 @@ impl Race {
         for (id, socket) in &self.participants {
             if id != &msg.user_id {
                 info!(message = "sending message", action = "send_message", ?msg);
-                let _ = socket.do_send(WsMessage(msg.clone()));
+                socket.do_send(WsMessage(msg.clone()));
             }
         }
     }

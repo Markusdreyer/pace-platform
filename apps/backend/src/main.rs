@@ -2,29 +2,25 @@ mod db_client;
 mod models;
 
 use axum::{
-    body::Bytes,
-    extract::{MatchedPath, Query, State},
-    http::{HeaderMap, Request, StatusCode},
-    response::{Response, Result},
+    extract::{Query, State},
+    http::{StatusCode},
+    response::{Result},
     routing::{get, post},
     Json, Router,
 };
 use db_client::{Db, DbRecord};
 use models::{user::User, Name};
 use serde::Deserialize;
-use std::{net::SocketAddr, sync::Arc, time::Duration};
+use std::{net::SocketAddr};
 use surrealdb::{engine::remote::ws::Client, Surreal};
-use tower_http::{classify::ServerErrorsFailureClass, trace::TraceLayer};
-use tracing::{info_span, Span};
-use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
-use utoipa::{
-    openapi::security::{ApiKey, ApiKeyValue, SecurityScheme},
-    Modify, OpenApi,
-};
-use utoipa_swagger_ui::SwaggerUi;
+
+
+
+
+
 mod utils;
 use crate::models::DbResource;
-use log;
+
 // #[derive(OpenApi)]
 // struct ApiDoc;
 
@@ -90,7 +86,7 @@ async fn create_user(
         Err(err) => {
             // log trace of error
             tracing::error!("db error: {:?}", err);
-            return Err(format!("db error: {:?}", err));
+            Err(format!("db error: {:?}", err))
         }
     }
 }
