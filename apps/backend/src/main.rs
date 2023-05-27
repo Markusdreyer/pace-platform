@@ -15,7 +15,7 @@ use serde::Deserialize;
 use std::{net::SocketAddr, sync::Arc, time::Duration};
 use surrealdb::{engine::remote::ws::Client, Surreal};
 use tower_http::{classify::ServerErrorsFailureClass, trace::TraceLayer};
-use tracing::{info, info_span, Span};
+use tracing::{info_span, Span};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 use utoipa::{
     openapi::security::{ApiKey, ApiKeyValue, SecurityScheme},
@@ -24,26 +24,17 @@ use utoipa::{
 use utoipa_swagger_ui::SwaggerUi;
 mod utils;
 use crate::models::DbResource;
-
+use log::{info, warn};
 // #[derive(OpenApi)]
 // struct ApiDoc;
 
 #[tokio::main]
 async fn main() {
-    info!("info!(starting axum server)");
     println!("println!(starting axum server)");
-    // initialize tracing
-    tracing_subscriber::registry()
-        .with(
-            tracing_subscriber::EnvFilter::try_from_default_env().unwrap_or_else(|_| {
-                // axum logs rejections from built-in extractors with the `axum::rejection`
-                // target, at `TRACE` level. `axum::rejection=trace` enables showing those events
-                "example_tracing_aka_logging=debug,tower_http=debug,axum::rejection=trace".into()
-            }),
-        )
-        .with(tracing_subscriber::fmt::layer())
-        .init();
-    info!("tracing initialized");
+    env_logger::init();
+
+    info!("This is an info message");
+    warn!("This is a warning message");
 
     let db = match Db::new().await {
         Ok(db) => db,
