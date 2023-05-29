@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use validator::Validate;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[allow(dead_code)]
@@ -14,10 +15,13 @@ pub enum ImageSize {
     W2500,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Validate, Deserialize)]
 pub struct ImageUrl {
     /// url to the image in it's original size
+    #[validate(url)]
     original: String,
+
+    /// @todo implement
     sizes: Vec<(ImageSize, String)>,
 }
 
@@ -31,23 +35,26 @@ impl ImageUrl {
             sizes: Vec::new(),
         }
     }
-    #[allow(dead_code)]
 
+    #[allow(dead_code)]
     fn with_size(mut self, size: ImageSize, url: String) -> Self {
         self.sizes.push((size, url));
         self
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Validate, Deserialize)]
 pub struct Image {
     /// reference to the storage asset where the image is stored
+    #[validate(length(min = 3, max = 255))]
     asset_id: Option<String>,
 
     /// url to the image in different sizes
+    #[validate]
     url: ImageUrl,
 
     /// for retards
+    #[validate(length(min = 3, max = 255))]
     alt_text: Option<String>,
 }
 

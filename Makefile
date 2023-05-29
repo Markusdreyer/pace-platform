@@ -21,7 +21,7 @@ build:
 
 # run
 run-backend:
-	cd apps/backend && cargo run
+	cd apps/backend && cargo watch -c -w src/ -x "run"
 run-surrealdb:
 	docker run --rm --pull always -p 8000:8000 -v data:/mydata surrealdb/surrealdb:latest start --log trace --user root --pass root  file://data/srdb.db
 run-websockets:

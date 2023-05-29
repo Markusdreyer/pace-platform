@@ -8,7 +8,7 @@ use surrealdb::Surreal;
 #[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct DbRecord {
     #[allow(dead_code)]
-    id: Thing,
+    pub id: Thing,
 }
 
 #[derive(FromRef, Debug, Clone)]
@@ -23,8 +23,7 @@ impl Db {
         println!("Connecting to {}", ws_url_dev);
 
         // Connect to the server
-        let client = Surreal::new::<Ws>(ws_url_dev)
-            .await?;
+        let client = Surreal::new::<Ws>(ws_url_dev).await?;
 
         println!("Connected to {}", ws_url_dev);
 
