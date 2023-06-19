@@ -1,0 +1,607 @@
+[
+  {
+    "userId": "markus",
+    "timestamp": 1684485024,
+    "coordinates": { "lat": 37.32475582, "long": -122.02238087 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485025,
+    "coordinates": { "lat": 37.32475578, "long": -122.02241978 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485026,
+    "coordinates": { "lat": 37.32475648, "long": -122.02245914 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485027,
+    "coordinates": { "lat": 37.32475587, "long": -122.02249983 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485028,
+    "coordinates": { "lat": 37.32475605, "long": -122.02254174 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485029,
+    "coordinates": { "lat": 37.32475505, "long": -122.02258327 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485030,
+    "coordinates": { "lat": 37.32475354, "long": -122.02262382 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485031,
+    "coordinates": { "lat": 37.32463343, "long": -122.0228739 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485032,
+    "coordinates": { "lat": 37.32464236, "long": -122.02288966 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485033,
+    "coordinates": { "lat": 37.32465313, "long": -122.02294052 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485034,
+    "coordinates": { "lat": 37.32465873, "long": -122.02298194 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485035,
+    "coordinates": { "lat": 37.32465919, "long": -122.02302279 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485036,
+    "coordinates": { "lat": 37.32466, "long": -122.02305644 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485037,
+    "coordinates": { "lat": 37.32465631, "long": -122.02308996 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485038,
+    "coordinates": { "lat": 37.32465371, "long": -122.02311831 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485039,
+    "coordinates": { "lat": 37.32465029, "long": -122.02313143 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485040,
+    "coordinates": { "lat": 37.32464664, "long": -122.02314017 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485041,
+    "coordinates": { "lat": 37.32464664, "long": -122.02314017 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485042,
+    "coordinates": { "lat": 37.32463648, "long": -122.02314348 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485043,
+    "coordinates": { "lat": 37.32463013, "long": -122.02314797 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485044,
+    "coordinates": { "lat": 37.3246248, "long": -122.023166 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485045,
+    "coordinates": { "lat": 37.32461958, "long": -122.02319907 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485046,
+    "coordinates": { "lat": 37.32462324, "long": -122.02323353 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485047,
+    "coordinates": { "lat": 37.32462605, "long": -122.02327306 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485048,
+    "coordinates": { "lat": 37.3246282, "long": -122.02331837 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485049,
+    "coordinates": { "lat": 37.32463487, "long": -122.02335996 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485050,
+    "coordinates": { "lat": 37.32463256, "long": -122.02339656 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485051,
+    "coordinates": { "lat": 37.32463193, "long": -122.02343887 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485052,
+    "coordinates": { "lat": 37.32462986, "long": -122.02347873 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485053,
+    "coordinates": { "lat": 37.32462792, "long": -122.02351949 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485054,
+    "coordinates": { "lat": 37.3246286, "long": -122.02356127 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485055,
+    "coordinates": { "lat": 37.32463012, "long": -122.02360426 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485056,
+    "coordinates": { "lat": 37.32463391, "long": -122.02364774 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485057,
+    "coordinates": { "lat": 37.3246316, "long": -122.02369228 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485058,
+    "coordinates": { "lat": 37.32463188, "long": -122.02373378 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485059,
+    "coordinates": { "lat": 37.32462841, "long": -122.02377562 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485060,
+    "coordinates": { "lat": 37.32462634, "long": -122.02381665 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485061,
+    "coordinates": { "lat": 37.32462582, "long": -122.02385532 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485062,
+    "coordinates": { "lat": 37.32462327, "long": -122.02389086 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485063,
+    "coordinates": { "lat": 37.32462526, "long": -122.02392524 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485064,
+    "coordinates": { "lat": 37.32462629, "long": -122.02395876 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485065,
+    "coordinates": { "lat": 37.3246288, "long": -122.02399376 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485066,
+    "coordinates": { "lat": 37.32463299, "long": -122.02403404 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485067,
+    "coordinates": { "lat": 37.32462938, "long": -122.02407183 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485068,
+    "coordinates": { "lat": 37.32463016, "long": -122.02411329 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485069,
+    "coordinates": { "lat": 37.32462817, "long": -122.02415843 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485070,
+    "coordinates": { "lat": 37.32462846, "long": -122.02420475 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485071,
+    "coordinates": { "lat": 37.32461955, "long": -122.02425295 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485072,
+    "coordinates": { "lat": 37.32461499, "long": -122.02429853 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485073,
+    "coordinates": { "lat": 37.32461431, "long": -122.02434526 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485074,
+    "coordinates": { "lat": 37.32461163, "long": -122.02439297 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485075,
+    "coordinates": { "lat": 37.32461046, "long": -122.02443333 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485076,
+    "coordinates": { "lat": 37.32460617, "long": -122.02447971 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485077,
+    "coordinates": { "lat": 37.32460297, "long": -122.0245231 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485078,
+    "coordinates": { "lat": 37.32460017, "long": -122.02456981 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485079,
+    "coordinates": { "lat": 37.32459911, "long": -122.02461567 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485080,
+    "coordinates": { "lat": 37.32459782, "long": -122.02465956 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485081,
+    "coordinates": { "lat": 37.32459711, "long": -122.02469996 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485082,
+    "coordinates": { "lat": 37.3245991, "long": -122.02473666 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485083,
+    "coordinates": { "lat": 37.32459787, "long": -122.02477367 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485084,
+    "coordinates": { "lat": 37.32459945, "long": -122.0248104 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485085,
+    "coordinates": { "lat": 37.32460021, "long": -122.02485088 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485086,
+    "coordinates": { "lat": 37.32460713, "long": -122.02489315 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485087,
+    "coordinates": { "lat": 37.3246086, "long": -122.02493735 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485088,
+    "coordinates": { "lat": 37.32461272, "long": -122.02497776 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485089,
+    "coordinates": { "lat": 37.32462517, "long": -122.02501499 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485090,
+    "coordinates": { "lat": 37.32464586, "long": -122.02504109 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485091,
+    "coordinates": { "lat": 37.32467094, "long": -122.02505236 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485092,
+    "coordinates": { "lat": 37.32469806, "long": -122.02506371 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485093,
+    "coordinates": { "lat": 37.32472821, "long": -122.02506879 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485094,
+    "coordinates": { "lat": 37.32475911, "long": -122.0250719 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485095,
+    "coordinates": { "lat": 37.32479044, "long": -122.02507262 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485096,
+    "coordinates": { "lat": 37.32482205, "long": -122.02507591 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485097,
+    "coordinates": { "lat": 37.32485436, "long": -122.02507643 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485098,
+    "coordinates": { "lat": 37.32488549, "long": -122.02507594 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485099,
+    "coordinates": { "lat": 37.32491893, "long": -122.02507326 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485100,
+    "coordinates": { "lat": 37.32495315, "long": -122.02507215 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485101,
+    "coordinates": { "lat": 37.32498776, "long": -122.02506705 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485102,
+    "coordinates": { "lat": 37.32502239, "long": -122.02506513 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485103,
+    "coordinates": { "lat": 37.32505675, "long": -122.02506421 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485104,
+    "coordinates": { "lat": 37.32509099, "long": -122.02506347 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485105,
+    "coordinates": { "lat": 37.32512076, "long": -122.02506723 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485106,
+    "coordinates": { "lat": 37.32514788, "long": -122.02506739 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485107,
+    "coordinates": { "lat": 37.32517505, "long": -122.02506934 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485108,
+    "coordinates": { "lat": 37.32520634, "long": -122.02507169 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485109,
+    "coordinates": { "lat": 37.32524099, "long": -122.02507159 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485110,
+    "coordinates": { "lat": 37.32527385, "long": -122.02507318 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485111,
+    "coordinates": { "lat": 37.32530773, "long": -122.02507104 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485112,
+    "coordinates": { "lat": 37.32534134, "long": -122.0250728 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485113,
+    "coordinates": { "lat": 37.32537458, "long": -122.02507452 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485114,
+    "coordinates": { "lat": 37.32540693, "long": -122.02508082 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485115,
+    "coordinates": { "lat": 37.3254398, "long": -122.0250814 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485116,
+    "coordinates": { "lat": 37.32547346, "long": -122.02508034 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485117,
+    "coordinates": { "lat": 37.32550756, "long": -122.02508123 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485118,
+    "coordinates": { "lat": 37.32554232, "long": -122.02508032 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485119,
+    "coordinates": { "lat": 37.32557627, "long": -122.02508339 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485120,
+    "coordinates": { "lat": 37.32561029, "long": -122.02508986 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485121,
+    "coordinates": { "lat": 37.32564514, "long": -122.02508477 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485122,
+    "coordinates": { "lat": 37.32567963, "long": -122.02507811 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485123,
+    "coordinates": { "lat": 37.3257148, "long": -122.02507279 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485124,
+    "coordinates": { "lat": 37.32574959, "long": -122.02506925 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485125,
+    "coordinates": { "lat": 37.32578368, "long": -122.02506681 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485126,
+    "coordinates": { "lat": 37.32581744, "long": -122.02506957 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485127,
+    "coordinates": { "lat": 37.32584722, "long": -122.0250862 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485128,
+    "coordinates": { "lat": 37.32587113, "long": -122.02511281 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485129,
+    "coordinates": { "lat": 37.32588247, "long": -122.02514811 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485130,
+    "coordinates": { "lat": 37.32589046, "long": -122.02518647 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485131,
+    "coordinates": { "lat": 37.32588783, "long": -122.02522833 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485132,
+    "coordinates": { "lat": 37.32588797, "long": -122.02527028 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485133,
+    "coordinates": { "lat": 37.32588701, "long": -122.02531075 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485134,
+    "coordinates": { "lat": 37.32588792, "long": -122.02535154 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485135,
+    "coordinates": { "lat": 37.32588914, "long": -122.02539062 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485136,
+    "coordinates": { "lat": 37.32588839, "long": -122.02542757 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485137,
+    "coordinates": { "lat": 37.32589041, "long": -122.02546633 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485138,
+    "coordinates": { "lat": 37.32589136, "long": -122.02550304 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485139,
+    "coordinates": { "lat": 37.32588961, "long": -122.02554166 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485140,
+    "coordinates": { "lat": 37.32589048, "long": -122.0255808 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485141,
+    "coordinates": { "lat": 37.32588951, "long": -122.02562318 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485142,
+    "coordinates": { "lat": 37.32589145, "long": -122.02566174 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485143,
+    "coordinates": { "lat": 37.32589393, "long": -122.02570387 }
+  },
+  {
+    "userId": "markus",
+    "timestamp": 1684485144,
+    "coordinates": { "lat": 37.32589924, "long": -122.02574547 }
+  }
+]

@@ -53,9 +53,6 @@ export default function MapPage({params}: any) {
           [json.userId]: updatedUserLocations
         };
       });
-
-      setCenter({ lat: json.coordinates.lat, lng: json.coordinates.long });
-      setZoom(18);
     };
 
     return () => {

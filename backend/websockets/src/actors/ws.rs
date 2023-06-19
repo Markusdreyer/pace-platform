@@ -5,7 +5,7 @@ use actix::{
 use actix::{AsyncContext, Message};
 use actix_web_actors::ws;
 use std::time::{Duration, Instant};
-use tracing::{debug, info};
+use tracing::{debug, error, info};
 
 use super::messages::{Connect, Disconnect, LocationUpdateMessage, WsMessage};
 use super::race::Race;
@@ -36,15 +36,15 @@ impl WsConnection {
         ctx.run_interval(HEARTBEAT_INTERVAL, |act, ctx| {
             debug!(message = "pinging client", action = "heartbeat", ?act);
             if Instant::now().duration_since(act.heartbeat) > CLIENT_TIMEOUT {
-                info!(
+                error!(
                     message = "client heartbeat failed, disconnecting",
                     action = "heartbeat",
                     ?act
                 );
-                act.race_addr.do_send(Disconnect {
-                    user_id: act.user_id.clone(),
-                });
-                ctx.stop();
+                // act.race_addr.do_send(Disconnect {
+                //     user_id: act.user_id.clone(),
+                // });
+                // ctx.stop();
                 return;
             }
 
@@ -109,6 +109,7 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for WsConnection {
                     Ok(message) => message,
                     Err(e) => return ctx.text(e.to_json().to_string()),
                 };
+                //append_msg_to_file(&location_update_message);
                 self.race_addr.do_send(location_update_message);
             }
             Ok(ws::Message::Close(reason)) => {
@@ -130,4 +131,20 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for WsConnection {
             Err(e) => panic!("{}", e),
         }
     }
+}
+
+fn append_msg_to_file(msg: &LocationUpdateMessage) {
+    use std::fs::OpenOptions;
+    use std::io::Write;
+    use std::path::PathBuf;
+
+    let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    path.push("location_updates.json");
+    let mut file = OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open(path)
+        .unwrap();
+    let json = serde_json::to_string(msg).unwrap();
+    writeln!(file, "{json},").unwrap();
 }
