@@ -4,20 +4,24 @@ use actix_web::web::{Data, Path, Payload};
 use actix_web::{get, App, Error, HttpRequest, HttpResponse, HttpServer};
 use actix_web_actors::ws;
 use actors::race::Race;
+use prometheus::Encoder;
 use shared::log::configure_log;
 use shared::setup_config;
 use tracing::info;
 use uuid::Uuid;
 
 use crate::actors::ws::WsConnection;
+use crate::prom::{register_custom_metrics, INCOMING_REQUESTS, REGISTRY};
 
 mod actors;
 mod model;
+mod prom;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     let config: model::Settings = setup_config().expect("could not setup config");
     configure_log(config.log.level);
+    register_custom_metrics();
 
     let race_server = Race::default().start();
 
@@ -27,6 +31,7 @@ async fn main() -> std::io::Result<()> {
         let cors = Cors::permissive();
         App::new()
             .wrap(cors)
+            .service(metrics)
             .service(establish_connection)
             .data(race_server.clone())
     })
@@ -35,7 +40,7 @@ async fn main() -> std::io::Result<()> {
     .await
 }
 
-#[get("/{race_id}")]
+#[get("/race/{race_id}")]
 pub async fn establish_connection(
     req: HttpRequest,
     stream: Payload,
@@ -43,8 +48,26 @@ pub async fn establish_connection(
     srv: Data<Addr<Race>>,
 ) -> Result<HttpResponse, Error> {
     info!(message = "new connection", action = "establish_connection");
+
+    INCOMING_REQUESTS.inc();
+
     let user_id = Uuid::new_v4().to_string();
     let ws = WsConnection::new(user_id, race_id, srv.get_ref().clone());
     let resp = ws::start(ws, &req, stream)?;
     Ok(resp)
+}
+
+#[get("/metrics")]
+pub async fn metrics() -> Result<HttpResponse, Error> {
+    // Gather the metrics
+    let encoder = prometheus::TextEncoder::new();
+
+    let mut buffer = Vec::new();
+    if let Err(e) = encoder.encode(&REGISTRY.gather(), &mut buffer) {
+        print!("Error encoding metrics: {e}")
+    }
+
+    let metrics = String::from_utf8(buffer).unwrap();
+
+    Ok(HttpResponse::Ok().body(metrics))
 }
