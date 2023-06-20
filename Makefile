@@ -6,3 +6,7 @@ run-spectator-client:
 	cd spectator-client && npm run dev
 deploy-websockets:
 	cd backend && flyctl deploy --config websockets/fly.toml --app websockets     
+build-prometheus:
+	cd backend/observability/prometheus && docker build -t prometheus .
+run-prometheus:
+	docker run -dp 9090:9090 prometheus

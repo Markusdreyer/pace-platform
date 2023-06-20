@@ -25,7 +25,7 @@ struct Coordinates {
     long: f64,
 }
 
-const TOTAL_CLIENTS: usize = 1000;
+const TOTAL_CLIENTS: usize = 10;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -53,7 +53,7 @@ async fn simulate_client(client_id: String) -> Result<(), Box<dyn Error + Send>>
     let mut rng = rand::rngs::StdRng::from_entropy();
 
     let (mut socket, response) =
-        connect(Url::parse("ws://localhost:8080/stream").unwrap()).expect("Can't connect");
+        connect(Url::parse("ws://localhost:8080/race/race1").unwrap()).expect("Can't connect");
 
     loop {
         let now = SystemTime::now();
