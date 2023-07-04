@@ -96,7 +96,7 @@ final class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate,
         let remoteUrl: String = "wss://websockets.fly.dev/race/"
         let localUrl: String = "ws://localhost:8080/race/"
     
-        let request = URLRequest(url: URL(string: localUrl + raceId)!)
+        let request = URLRequest(url: URL(string: remoteUrl + raceId)!)
         socket = WebSocket(request: request)
         socket?.delegate = self
         socket?.connect()

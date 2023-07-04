@@ -16,6 +16,9 @@ lazy_static! {
     pub static ref DISCONNECTED_CLIENTS: IntGauge =
         IntGauge::new("disconnected_clients", "Disconnected Clients")
             .expect("metric can be created");
+    pub static ref LOCATION_UPDATE_LATENCY: IntGauge =
+        IntGauge::new("location_update_latency", "Location Update Latency")
+            .expect("metric can be created");
 }
 
 pub fn register_custom_metrics() {
@@ -35,5 +38,8 @@ pub fn register_custom_metrics() {
         .expect("collector can be registered");
     REGISTRY
         .register(Box::new(LOCATION_UPDATES_RECEIVED.clone()))
+        .expect("collector can be registered");
+    REGISTRY
+        .register(Box::new(LOCATION_UPDATE_LATENCY.clone()))
         .expect("collector can be registered");
 }

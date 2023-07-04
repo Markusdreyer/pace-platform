@@ -10,3 +10,10 @@ build-prometheus:
 	cd backend/observability/prometheus && docker build -t prometheus .
 run-prometheus:
 	docker run -dp 9090:9090 prometheus
+build-grafana:
+	cd backend/observability/grafana && docker build -t grafana .
+run-grafana:
+	docker run -dp 3001:3000 grafana
+build-observability: build-prometheus build-grafana
+run-observability:
+	cd backend/observability && docker-compose up -d

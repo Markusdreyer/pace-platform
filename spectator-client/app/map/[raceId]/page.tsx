@@ -26,7 +26,7 @@ interface LocationUpdate {
     };
 }
 
-const REMOTE_URL = 'wss://websockets.fly.dev/';
+const REMOTE_URL = 'wss://websockets.fly.dev/race/';
 const LOCAL_URL  = 'ws://localhost:8080/';
 
 export default function MapPage({params}: any) {
@@ -36,7 +36,7 @@ export default function MapPage({params}: any) {
   const [zoom, setZoom] = useState(0);
 
   useEffect(() => {
-    const ws = new WebSocket(LOCAL_URL + raceId);
+    const ws = new WebSocket(REMOTE_URL + raceId);
 
     ws.onopen = () => {  
       console.log("websocket connection established");
