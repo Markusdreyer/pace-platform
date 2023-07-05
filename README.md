@@ -48,20 +48,27 @@ members = [
 If the service is not added to this file, then the Rust compiler can not find it and will not compile it.
 
 ## Observability
-As the services in this repo are designed to handle large amounts of real-time data, logging is insufficient for metrics. Instead, various observability tools are included to provide application insights (At the moment only prometheus). 
+As the services in this repo are designed to handle large amounts of real-time data, logging is insufficient for metrics. Instead, various observability tools are included to provide application insights, such as Prometheus and Grafana. 
 
-# Prometheus
+### How to run observability
+All observability tooling is neatly packaged in `backend/observability` and run with Docker. The tooling may be run independently with their respective `Make`-commands, or run all at once  with `make run-observability` (recommended). 
+
+**Remember to first run `make build-observability` if you haven't built the Docker images yet.**
+
+The Grafana GUI should be available at `localhost:3001`. Default username and password is `admin`. To get some data on the dashboard, run the websockets backend with `make run-websockets` and in another terminal, run benchmarking with `make run-benchmarking`. This will create numerous clients and populate the charts with realtime data.
+
+### Prometheus
 Prometheus is an open-source system for collecting and processing metrics from applications, which expose data via a `/metrics` endpoint. It scrapes this data regularly, storing it in a time-series database, and can trigger alerts based on defined conditions.
 The data exposed by the `/metrics`-endpoint are implemeted as a variety of data-types, such as counters. See example below:
 
 ```rust
-//We initialise the references
+//We initialise the metrics
 //prom.rs
 lazy_static {
     pub static ref DISCONNECTED_CLIENTS: IntGauge = IntGauge::new("disconnected_clients", "Disconnected Clients").expect("metric can be created");
 }
 
-//We add the functions to our prometheus register
+//We add the metrics to our prometheus register
 //main.rs
 REGISTRY.register(Box::new(DISCONNECTED_CLIENTS.clone())).expect("collector can be registered");
 
@@ -72,7 +79,10 @@ use::crate::prom::DISCONNECTED_CLIENTS
 
 DISCONNECTED_CLIENTS.inc();
 ```
-### Enable application insights
+### Grafana
+To make sense of all the data from Prometheus, we use Grafana to visualise and structure the data into dashboards for easy interpretation. 
+
+<img src="images/grafana.png" alt="Grafana dashboard" width="1400">
 
 ## Deployment
 This project uses [fly.io](https://fly.io/) to host its backend services. As the services are still in their infancy, there is no CD pipeline setup, but this will come shortly after the services have stabilized somewhat. For now, manual deployments are the way to go, but fear not; it's super simple. 
