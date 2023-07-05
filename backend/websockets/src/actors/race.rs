@@ -42,7 +42,7 @@ impl Handler<Disconnect> for Race {
     type Result = ();
 
     fn handle(&mut self, msg: Disconnect, _ctx: &mut Self::Context) -> Self::Result {
-        info!(message = "disconnecting", action = "disconnect_handler", participants = ?self.participants, ?msg);
+        debug!(message = "disconnecting", action = "disconnect_handler", participants = ?self.participants, ?msg);
         CONNECTED_CLIENTS.dec();
         DISCONNECTED_CLIENTS.inc();
         if self.participants.remove(&msg.user_id).is_none() {
@@ -58,7 +58,6 @@ impl Handler<Connect> for Race {
     type Result = ();
 
     fn handle(&mut self, msg: Connect, _ctx: &mut Self::Context) -> Self::Result {
-        info!(message = "new connection", action = "connect_handler", ?msg);
         CONNECTED_CLIENTS.inc();
         self.participants.insert(msg.user_id, msg.addr);
     }

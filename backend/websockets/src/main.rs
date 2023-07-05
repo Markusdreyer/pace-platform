@@ -6,7 +6,7 @@ use actix_web_actors::ws;
 use actors::race::Race;
 use prometheus::Encoder;
 use shared::log::configure_log;
-use shared::setup_config;
+use shared::{model::Settings, setup_config};
 use tracing::info;
 use uuid::Uuid;
 
@@ -14,12 +14,11 @@ use crate::actors::ws::WsConnection;
 use crate::prom::{register_custom_metrics, INCOMING_REQUESTS, REGISTRY};
 
 mod actors;
-mod model;
 mod prom;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    let config: model::Settings = setup_config().expect("could not setup config");
+    let config: Settings = setup_config().expect("could not setup config");
     configure_log(config.log.level);
     register_custom_metrics();
 

@@ -6,6 +6,7 @@ use config::{Config, ConfigError, Environment, File};
 use serde::Deserialize;
 
 pub mod log;
+pub mod model;
 
 pub fn setup_config<'a, T: Deserialize<'a>>() -> Result<T, ConfigError> {
     let env = env::var("RUN_MODE").unwrap_or_else(|_| "local".into());
