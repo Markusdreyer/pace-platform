@@ -1,7 +1,7 @@
 # Pace platform
 
 This repo contains all services related to the pace platform.
-## pace-backend
+## Backend
 The pace backend is written in Rust with a monorepo approach using cargo workspace to structure the microservices.
 
 ### Requirements
@@ -46,6 +46,33 @@ members = [
 ```
 
 If the service is not added to this file, then the Rust compiler can not find it and will not compile it.
+
+## Observability
+As the services in this repo are designed to handle large amounts of real-time data, logging is insufficient for metrics. Instead, various observability tools are included to provide application insights (At the moment only prometheus). 
+
+# Prometheus
+Prometheus is an open-source system for collecting and processing metrics from applications, which expose data via a `/metrics` endpoint. It scrapes this data regularly, storing it in a time-series database, and can trigger alerts based on defined conditions.
+The data exposed by the `/metrics`-endpoint are implemeted as a variety of data-types, such as counters. See example below:
+
+```rust
+//We initialise the references
+//prom.rs
+lazy_static {
+    pub static ref DISCONNECTED_CLIENTS: IntGauge = IntGauge::new("disconnected_clients", "Disconnected Clients").expect("metric can be created");
+}
+
+//We add the functions to our prometheus register
+//main.rs
+REGISTRY.register(Box::new(DISCONNECTED_CLIENTS.clone())).expect("collector can be registered");
+
+
+//This way, we can increment our counter wherever needed 
+//race.rs
+use::crate::prom::DISCONNECTED_CLIENTS
+
+DISCONNECTED_CLIENTS.inc();
+```
+### Enable application insights
 
 ## Deployment
 This project uses [fly.io](https://fly.io/) to host its backend services. As the services are still in their infancy, there is no CD pipeline setup, but this will come shortly after the services have stabilized somewhat. For now, manual deployments are the way to go, but fear not; it's super simple. 

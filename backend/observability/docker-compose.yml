@@ -1,0 +1,25 @@
+version: '3'
+services:
+  prometheus:
+    build: 
+      context: ./prometheus
+    ports:
+      - 9090:9090
+    networks:
+      - monitoring
+  grafana:
+    build:
+      context: ./grafana
+    ports:
+      - 3001:3000
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD_FORCE_CHANGE=false
+      - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
+    volumes: 
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+    networks:
+      - monitoring
+networks:
+  monitoring:
+    driver: bridge

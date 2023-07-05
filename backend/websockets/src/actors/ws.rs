@@ -104,7 +104,8 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for WsConnection {
                 self.heartbeat = Instant::now();
             }
             Ok(ws::Message::Binary(bin)) => {
-                info!(message = "binary message", action = "handle", ?bin);
+                //These messages comes from the app
+                debug!(message = "binary message", action = "handle", ?bin);
                 let location_update_message: LocationUpdateMessage = match bin.try_into() {
                     Ok(message) => message,
                     Err(e) => return ctx.text(e.to_json().to_string()),
@@ -121,7 +122,8 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for WsConnection {
             }
             Ok(ws::Message::Nop) => (),
             Ok(ws::Message::Text(text)) => {
-                info!(message = "text message", action = "handle", ?text);
+                //These messages comes from other clients
+                debug!(message = "text message", action = "handle", ?text);
                 let location_update_message: LocationUpdateMessage = match text.try_into() {
                     Ok(message) => message,
                     Err(e) => return ctx.text(e.to_json().to_string()),

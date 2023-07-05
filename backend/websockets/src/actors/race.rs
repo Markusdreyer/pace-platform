@@ -2,12 +2,16 @@ use std::collections::HashMap;
 
 use actix::{Actor, Context, Handler, Recipient};
 
-use crate::prom::{
-    CONNECTED_CLIENTS, DISCONNECTED_CLIENTS, LOCATION_UPDATES_RECEIVED, LOCATION_UPDATES_SENT,
+use crate::{
+    actors::measure_latency,
+    prom::{
+        CONNECTED_CLIENTS, DISCONNECTED_CLIENTS, LOCATION_UPDATES_RECEIVED, LOCATION_UPDATES_SENT,
+        LOCATION_UPDATE_LATENCY,
+    },
 };
 
 use super::messages::{Connect, Disconnect, LocationUpdateMessage, WsMessage};
-use tracing::{error, info};
+use tracing::{debug, error, info};
 
 type Socket = Recipient<WsMessage>;
 
@@ -20,7 +24,9 @@ impl Race {
     fn send_message(&self, msg: LocationUpdateMessage) {
         for (id, socket) in &self.participants {
             if id != &msg.user_id {
-                info!(message = "sending message", action = "send_message", ?msg);
+                debug!(message = "sending message", action = "send_message", ?msg);
+                let latency = measure_latency(&msg);
+                LOCATION_UPDATE_LATENCY.set(latency);
                 LOCATION_UPDATES_SENT.inc();
                 let _ = socket.do_send(WsMessage(msg.clone()));
             }
@@ -62,7 +68,7 @@ impl Handler<LocationUpdateMessage> for Race {
     type Result = ();
 
     fn handle(&mut self, msg: LocationUpdateMessage, _ctx: &mut Self::Context) -> Self::Result {
-        info!(message = "new message", action = "message_handler");
+        debug!(message = "new message", action = "message_handler");
         LOCATION_UPDATES_RECEIVED.inc();
         self.send_message(msg);
     }
