@@ -41,10 +41,10 @@ impl WsConnection {
                     action = "heartbeat",
                     ?act
                 );
-                // act.race_addr.do_send(Disconnect {
-                //     user_id: act.user_id.clone(),
-                // });
-                // ctx.stop();
+                act.race_addr.do_send(Disconnect {
+                    user_id: act.user_id.clone(),
+                });
+                ctx.stop();
                 return;
             }
 
@@ -97,10 +97,12 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for WsConnection {
     fn handle(&mut self, msg: Result<ws::Message, ws::ProtocolError>, ctx: &mut Self::Context) {
         match msg {
             Ok(ws::Message::Ping(msg)) => {
+                debug!(message = "ping received", action = "handle", ?msg);
                 self.heartbeat = Instant::now();
                 ctx.pong(&msg);
             }
             Ok(ws::Message::Pong(_)) => {
+                debug!(message = "pong received", action = "handle");
                 self.heartbeat = Instant::now();
             }
             Ok(ws::Message::Binary(bin)) => {

@@ -25,7 +25,7 @@ struct Coordinates {
     long: f64,
 }
 
-const TOTAL_CLIENTS: usize = 10;
+const TOTAL_CLIENTS: usize = 1;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -87,6 +87,17 @@ async fn simulate_client(client_id: String) -> Result<(), Box<dyn Error + Send>>
         let json = serde_json::to_string(&location_update).unwrap();
 
         socket.write_message(Message::Text(json)).unwrap();
+
+        match socket.read_message() {
+            Ok(msg) => {
+                if let Message::Ping(ping) = msg {
+                    socket.write_message(Message::Pong(ping)).unwrap();
+                }
+            }
+            Err(e) => {
+                error!("Error reading message: {:?}", e);
+            }
+        }
 
         sleep(Duration::from_millis(1000)).await; // pause before sending the next location update
     }
