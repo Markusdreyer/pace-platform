@@ -5,7 +5,9 @@ run-benchmarking:
 run-spectator-client:
 	cd spectator-client && npm run dev
 deploy-websockets:
-	cd backend && flyctl deploy --config websockets/fly.toml --app websockets     
+	cd backend && flyctl deploy --config websockets/fly.toml --app websockets
+deploy-spectator-client:
+	cd spectator-client && npm run build && flyctl deploy --app spectator-client     
 build-prometheus:
 	cd backend/observability/prometheus && docker build -t prometheus .
 run-prometheus:

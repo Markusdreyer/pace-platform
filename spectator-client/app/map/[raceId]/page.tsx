@@ -26,17 +26,22 @@ interface LocationUpdate {
     };
 }
 
-const REMOTE_URL = 'wss://websockets.fly.dev/race/';
-const LOCAL_URL  = 'ws://localhost:8080/race/';
+
 
 export default function MapPage({params}: any) {
+  const isLocal = typeof window === 'undefined' || window.location.hostname === 'localhost';
+  const REMOTE_URL = 'wss://websockets.fly.dev/race/';
+  const LOCAL_URL  = 'ws://localhost:8080/race/';
+
+const url = isLocal ? LOCAL_URL : REMOTE_URL;
+
   const raceId = params.raceId
   const [locations, setLocations] = useState<UserLocations>(Object.create(null));
   const [center, setCenter] = useState({ lat: 0, lng: 0 });
   const [zoom, setZoom] = useState(0);
 
   useEffect(() => {
-    const ws = new WebSocket(LOCAL_URL + raceId);
+    const ws = new WebSocket(url + raceId);
 
     ws.onopen = () => {  
       console.log("websocket connection established");
@@ -64,7 +69,7 @@ export default function MapPage({params}: any) {
   return (
     <div style={{ height: '100vh', width: '100%' }}>
       <GoogleMapReact
-        bootstrapURLKeys={{ key: 'AIzaSyAnElPyLzdiSK-QFi9Lar05CZ_LwqHBFtI' }}
+        bootstrapURLKeys={{ key: 'AIzaSyAmG6gfiY8QojDxjQSes-7S_xLQmJjjUcQ' }}
         defaultCenter={center}
         defaultZoom={zoom}
         center={center}
