@@ -1,0 +1,32 @@
+version: '3'
+services:
+  kafka:
+    container_name: playground_kafka
+    image: 'bitnami/kafka:3.3.1'
+    ports:
+      - '9092:9092'
+    tmpfs:
+      - /bitnami/:uid=1001,gid=1
+    command: [
+      sh, -c, 
+      # Kraft specific initialise
+      '/opt/bitnami/scripts/kafka/setup.sh && kafka-storage.sh format --config "$${KAFKA_CONF_FILE}" --cluster-id "lkorDA4qT6W1K_dk0LHvtg" --ignore-formatted && /opt/bitnami/scripts/kafka/run.sh' 
+    ]
+    healthcheck:
+      test: "exit 0"
+    environment:
+      - ALLOW_PLAINTEXT_LISTENER=yes
+
+      # Start Kraft Setup (Kafka as Controller - no Zookeeper)
+      - KAFKA_CFG_NODE_ID=1
+      - KAFKA_CFG_BROKER_ID=1
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@127.0.0.1:9093
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://kafka:29092,PLAINTEXT_HOST://:9092,CONTROLLER://:9093
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT,CONTROLLER:PLAINTEXT
+      - KAFKA_CFG_PROCESS_ROLES=broker,controller
+      - KAFKA_CFG_LOG_DIRS=/tmp/logs
+      - KAFKA_AUTO_CREATE_TOPICS_ENABLE=true
+      # End Kraft Specific Setup
+
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092

@@ -5,7 +5,10 @@ use actix_web::{get, App, Error, HttpRequest, HttpResponse, HttpServer};
 use actix_web_actors::ws;
 use actors::race::Race;
 use prometheus::Encoder;
+use rdkafka::producer::FutureProducer;
+use rdkafka::{producer, ClientConfig};
 use shared::log::configure_log;
+use shared::model::Topics;
 use shared::{model::Settings, setup_config};
 use tracing::info;
 use uuid::Uuid;
@@ -26,6 +29,15 @@ async fn main() -> std::io::Result<()> {
 
     info!("Starting server");
 
+    let mut kafka_config = ClientConfig::new();
+    kafka_config
+        .set("bootstrap.servers", config.kafka.host.as_str())
+        .set("security.protocol", config.kafka.security_protocol.as_str());
+
+    let kafka_producer: producer::FutureProducer = kafka_config
+        .create()
+        .expect("could not create kafka producer");
+
     HttpServer::new(move || {
         let cors = Cors::permissive();
         App::new()
@@ -33,6 +45,8 @@ async fn main() -> std::io::Result<()> {
             .service(metrics)
             .service(establish_connection)
             .data(race_server.clone())
+            .data(kafka_producer.clone())
+            .data(config.kafka.topics.clone())
     })
     .bind("0.0.0.0:8080")?
     .run()
@@ -45,13 +59,21 @@ pub async fn establish_connection(
     stream: Payload,
     Path(race_id): Path<String>,
     srv: Data<Addr<Race>>,
+    kafka_producer: Data<FutureProducer>,
+    kafka_topics: Data<Topics>,
 ) -> Result<HttpResponse, Error> {
     info!(message = "new connection", action = "establish_connection");
 
     INCOMING_REQUESTS.inc();
 
     let user_id = Uuid::new_v4().to_string();
-    let ws = WsConnection::new(user_id, race_id, srv.get_ref().clone());
+    let ws = WsConnection::new(
+        user_id,
+        race_id,
+        srv.get_ref().clone(),
+        kafka_producer.get_ref().clone(),
+        kafka_topics.get_ref().clone(),
+    );
     let resp = ws::start(ws, &req, stream)?;
     Ok(resp)
 }
