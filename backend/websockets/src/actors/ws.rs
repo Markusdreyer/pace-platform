@@ -6,7 +6,6 @@ use actix::{AsyncContext, Message};
 use actix_web_actors::ws;
 use rdkafka::producer::{FutureProducer, FutureRecord};
 use rdkafka::util::Timeout;
-use rdkafka::ClientConfig;
 use shared::model::Topics;
 use std::time::{Duration, Instant};
 use tracing::{debug, error};
@@ -64,6 +63,43 @@ impl WsConnection {
             ctx.ping(b"PING");
         });
     }
+
+    fn process_message(&mut self, location_update_message: LocationUpdateMessage) {
+        let kafka_message = match serde_json::to_string(&location_update_message) {
+            Ok(message) => message,
+            Err(e) => {
+                error!(
+                    message = "failed to serialize message",
+                    action = "process_message",
+                    ?e
+                );
+                return;
+            }
+        };
+
+        let user_id = location_update_message.user_id;
+        let kafka_producer = self.kafka_producer.clone();
+        let kafka_topic = self.kafka_topics.location_update.clone();
+        actix_web::rt::spawn(async move {
+            let result = kafka_producer
+                .send(
+                    FutureRecord::to(&kafka_topic)
+                        .payload(&kafka_message)
+                        .key(&user_id),
+                    Timeout::Never,
+                )
+                .await;
+
+            match result {
+                Ok(_) => {
+                    debug!(message = "message sent", action = "process_message");
+                }
+                Err(e) => {
+                    error!(message = "message not sent", action = "process_message", ?e);
+                }
+            }
+        });
+    }
 }
 
 impl Handler<WsMessage> for WsConnection {
@@ -119,39 +155,12 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for WsConnection {
                 self.heartbeat = Instant::now();
             }
             Ok(ws::Message::Binary(bin)) => {
-                //These messages comes from the app
+                //These messages come from the app
                 debug!(message = "binary message", action = "handle", ?bin);
-                let location_update_message: LocationUpdateMessage = match bin.try_into() {
-                    Ok(message) => message,
-                    Err(e) => return ctx.text(e.to_json().to_string()),
+                match bin.try_into() {
+                    Ok(location_update_message) => self.process_message(location_update_message),
+                    Err(e) => ctx.text(e.to_json().to_string()),
                 };
-
-                let kafka_message = serde_json::to_string(&location_update_message).unwrap();
-                let user_id = location_update_message.user_id;
-
-                let kafka_producer = self.kafka_producer.clone();
-                let kafka_topic = self.kafka_topics.location_update.clone();
-                actix_web::rt::spawn(async move {
-                    let result = kafka_producer
-                        .send(
-                            FutureRecord::to(&kafka_topic)
-                                .payload(&kafka_message)
-                                .key(&user_id),
-                            Timeout::Never,
-                        )
-                        .await;
-
-                    match result {
-                        Ok(_) => {
-                            debug!(message = "message sent", action = "handle");
-                        }
-                        Err(e) => {
-                            error!(message = "message not sent", action = "handle", ?e);
-                        }
-                    }
-                });
-
-                //append_msg_to_file(&location_update_message); //This is used to create benchmarking data
             }
             Ok(ws::Message::Close(reason)) => {
                 ctx.close(reason);
@@ -164,53 +173,12 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for WsConnection {
             Ok(ws::Message::Text(text)) => {
                 //These messages comes from other clients
                 debug!(message = "text message", action = "handle", ?text);
-                let location_update_message: LocationUpdateMessage = match text.try_into() {
-                    Ok(message) => message,
-                    Err(e) => return ctx.text(e.to_json().to_string()),
+                match text.try_into() {
+                    Ok(location_update_message) => self.process_message(location_update_message),
+                    Err(e) => ctx.text(e.to_json().to_string()),
                 };
-
-                let kafka_message = serde_json::to_string(&location_update_message).unwrap();
-                let user_id = location_update_message.user_id;
-
-                let kafka_producer = self.kafka_producer.clone();
-                let kafka_topic = self.kafka_topics.location_update.clone();
-                actix_web::rt::spawn(async move {
-                    let result = kafka_producer
-                        .send(
-                            FutureRecord::to(&kafka_topic)
-                                .payload(&kafka_message)
-                                .key(&user_id),
-                            Timeout::Never,
-                        )
-                        .await;
-
-                    match result {
-                        Ok(_) => {
-                            debug!(message = "message sent", action = "handle");
-                        }
-                        Err(e) => {
-                            error!(message = "message not sent", action = "handle", ?e);
-                        }
-                    }
-                });
             }
             Err(e) => panic!("{}", e),
         }
     }
-}
-
-fn append_msg_to_file(msg: &LocationUpdateMessage) {
-    use std::fs::OpenOptions;
-    use std::io::Write;
-    use std::path::PathBuf;
-
-    let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    path.push("location_updates.json");
-    let mut file = OpenOptions::new()
-        .create(true)
-        .append(true)
-        .open(path)
-        .unwrap();
-    let json = serde_json::to_string(msg).unwrap();
-    writeln!(file, "{json},").unwrap();
 }
