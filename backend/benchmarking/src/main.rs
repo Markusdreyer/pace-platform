@@ -30,7 +30,7 @@ struct Coordinates {
     long: f64,
 }
 
-const TOTAL_CLIENTS: usize = 100;
+const TOTAL_CLIENTS: usize = 50;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -58,7 +58,7 @@ async fn simulate_client(client_id: String) -> Result<(), Box<dyn Error + Send>>
     let reader = BufReader::new(file);
     let location_updates: Vec<LocationUpdate> = from_reader(reader).expect("could not parse json");
 
-    let (ws_stream, _) = connect_async(Url::parse("ws://localhost:8080/race/race1").unwrap())
+    let (ws_stream, _) = connect_async(Url::parse("wss://websockets.fly.dev/race/race1").unwrap())
         .await
         .expect("Can't connect");
 

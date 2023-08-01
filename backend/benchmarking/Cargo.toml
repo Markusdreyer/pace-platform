@@ -15,4 +15,4 @@ tracing = "0.1.37"
 shared = { path = "../shared"}
 tungstenite = "0.19.0"
 url = "2.2.2"
-tokio-tungstenite = "0.19.0"
+tokio-tungstenite = { version = "0.19", features = ["native-tls"] }

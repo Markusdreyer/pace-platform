@@ -14,3 +14,7 @@ primary_region = "arn"
 
 [build]
   dockerfile = "Dockerfile"
+
+[metrics]
+  port = 8080
+  path = "/metrics"
