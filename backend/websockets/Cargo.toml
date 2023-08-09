@@ -17,5 +17,5 @@ actix-cors = "0.5.4"
 prometheus = "0.13"
 lazy_static = "1.4"
 chrono = "0.4.26"
-rdkafka = { version = "0.29.0", features = ["cmake-build"] }
-
+rdkafka = { version = "0.33.2", features = ["cmake-build"] }
+async-stream = "0.3.5"

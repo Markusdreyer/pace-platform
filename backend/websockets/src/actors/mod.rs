@@ -2,6 +2,7 @@ use chrono::Utc;
 
 use self::messages::LocationUpdateMessage;
 
+pub mod kafka_consumer;
 pub mod messages;
 pub mod race;
 pub mod ws;

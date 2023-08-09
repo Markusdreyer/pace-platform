@@ -8,11 +8,12 @@ use prometheus::Encoder;
 use rdkafka::producer::FutureProducer;
 use rdkafka::{producer, ClientConfig};
 use shared::log::configure_log;
-use shared::model::Topics;
+use shared::model::{Kafka, Topics};
 use shared::{model::Settings, setup_config};
 use tracing::info;
 use uuid::Uuid;
 
+use crate::actors::kafka_consumer::{KafkaConsumer, KafkaConsumerActor};
 use crate::actors::ws::WsConnection;
 use crate::prom::{register_custom_metrics, INCOMING_REQUESTS, REGISTRY};
 
@@ -32,11 +33,22 @@ async fn main() -> std::io::Result<()> {
     let mut kafka_config = ClientConfig::new();
     kafka_config
         .set("bootstrap.servers", config.kafka.host.as_str())
+        .set("group.id", "foo")
+        .set("enable.auto.commit", config.kafka.auto_commit.to_string())
         .set("security.protocol", config.kafka.security_protocol.as_str());
 
     let kafka_producer: producer::FutureProducer = kafka_config
         .create()
         .expect("could not create kafka producer");
+
+    let kafka_consumer = KafkaConsumer::new(
+        kafka_config,
+        vec![config.kafka.topics.location_update.as_str()],
+    )
+    .expect("could not create kafka consumer");
+
+    let kafka_consumer_actor = KafkaConsumerActor::new(kafka_consumer, race_server.clone());
+    kafka_consumer_actor.start();
 
     HttpServer::new(move || {
         let cors = Cors::permissive();
