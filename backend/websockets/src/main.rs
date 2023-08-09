@@ -1,6 +1,6 @@
 use actix::{Actor, Addr};
 use actix_cors::Cors;
-use actix_web::web::{self, Data, Path, Payload};
+use actix_web::web::{Data, Path, Payload};
 use actix_web::{get, App, Error, HttpRequest, HttpResponse, HttpServer};
 use actix_web_actors::ws;
 use actors::race::Race;
