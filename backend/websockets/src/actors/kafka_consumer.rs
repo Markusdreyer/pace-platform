@@ -1,7 +1,7 @@
 use async_stream::stream;
 use std::sync::{Arc, Mutex};
 
-use actix::{Actor, Addr, AsyncContext, Context, Handler, StreamHandler};
+use actix::{Actor, Addr, AsyncContext, Context, Handler, StreamHandler, WrapFuture};
 use rdkafka::{
     consumer::{Consumer, StreamConsumer},
     error::{KafkaError, KafkaResult},
@@ -67,37 +67,28 @@ impl Actor for KafkaConsumerActor {
         let consumer_clone = self.kafka_consumer.clone();
         let race_addr = self.race_addr.clone();
 
-        ctx.add_message_stream(Box::pin(async_stream::stream! {
-            let mut kafka_consumer = match consumer_clone.lock() {
-                Ok(consumer) => consumer,
-                Err(_) => {
-                    error!("Failed to acquire lock on Kafka consumer");
-                    return;
-                }
-            };
-
-            loop {
-                match kafka_consumer.consume().await {
-                    Ok(location_update) => {
-                        info!("received location update from kafka: {:?}", location_update);
-                        yield location_update;
+        // Create a separate async task that runs the loop
+        ctx.spawn(
+            async move {
+                let mut kafka_consumer = match consumer_clone.lock() {
+                    Ok(consumer) => consumer,
+                    Err(_) => {
+                        error!("Failed to acquire lock on Kafka consumer");
+                        return;
                     }
-                    Err(e) => error!("error consuming kafka message: {:?}", e),
+                };
+
+                loop {
+                    match kafka_consumer.consume().await {
+                        Ok(location_update) => {
+                            // Directly sending the location_update to race_addr
+                            race_addr.do_send(location_update);
+                        }
+                        Err(e) => error!("error consuming kafka message: {:?}", e),
+                    }
                 }
             }
-        }));
-    }
-}
-
-impl StreamHandler<LocationUpdateMessage> for KafkaConsumerActor {
-    fn handle(&mut self, msg: LocationUpdateMessage, ctx: &mut Self::Context) {
-        self.race_addr.do_send(msg);
-    }
-}
-
-impl Handler<LocationUpdateMessage> for KafkaConsumerActor {
-    type Result = ();
-    fn handle(&mut self, msg: LocationUpdateMessage, ctx: &mut Self::Context) -> Self::Result {
-        // handle the message here
+            .into_actor(self),
+        );
     }
 }

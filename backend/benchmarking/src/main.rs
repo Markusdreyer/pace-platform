@@ -30,7 +30,7 @@ struct Coordinates {
     long: f64,
 }
 
-const TOTAL_CLIENTS: usize = 10;
+const TOTAL_CLIENTS: usize = 500;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -43,7 +43,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
         let handle = task::spawn(simulate_client(client_id));
         handles.push(handle);
-        sleep(Duration::from_millis(1000)).await; // pause before spawning next client
+        sleep(Duration::from_millis(10)).await; // pause before spawning next client
     }
 
     for handle in handles {
