@@ -1,3 +1,4 @@
+use actix::ActorFutureExt;
 use actix::{
     fut, Actor, ActorContext, ActorFuture, Addr, ContextFutureSpawner, Handler, Running,
     StreamHandler, WrapFuture,
@@ -68,6 +69,7 @@ impl Actor for WsConnection {
         self.heartbeat(ctx);
 
         let addr = ctx.address();
+
         self.race_addr
             .send(Connect {
                 addr: addr.recipient(),
@@ -82,14 +84,7 @@ impl Actor for WsConnection {
                 }
                 fut::ready(())
             })
-            .wait(ctx);
-    }
-
-    fn stopping(&mut self, _: &mut Self::Context) -> Running {
-        self.race_addr.do_send(Disconnect {
-            user_id: self.user_id.clone(),
-        });
-        Running::Stop
+            .wait(ctx)
     }
 }
 
@@ -126,10 +121,11 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for WsConnection {
             Ok(ws::Message::Text(text)) => {
                 //These messages comes from other clients
                 debug!(message = "text message", action = "handle", ?text);
-                let location_update_message: LocationUpdateMessage = match text.try_into() {
-                    Ok(message) => message,
-                    Err(e) => return ctx.text(e.to_json().to_string()),
-                };
+                let location_update_message: LocationUpdateMessage =
+                    match text.as_bytes().to_owned().try_into() {
+                        Ok(message) => message,
+                        Err(e) => return ctx.text(e.to_json().to_string()),
+                    };
                 self.race_addr.do_send(location_update_message);
             }
             Err(e) => panic!("{}", e),
