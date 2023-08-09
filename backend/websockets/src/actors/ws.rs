@@ -1,11 +1,11 @@
+use actix::ActorFutureExt;
 use actix::{
-    fut, Actor, ActorContext, ActorFuture, Addr, ContextFutureSpawner, Handler, Running,
-    StreamHandler, WrapFuture,
+    fut, Actor, ActorContext, Addr, ContextFutureSpawner, Handler, StreamHandler, WrapFuture,
 };
 use actix::{AsyncContext, Message};
 use actix_web_actors::ws;
 use std::time::{Duration, Instant};
-use tracing::{debug, error, info};
+use tracing::{debug, error};
 
 use super::messages::{Connect, Disconnect, LocationUpdateMessage, WsMessage};
 use super::race::Race;
@@ -68,6 +68,7 @@ impl Actor for WsConnection {
         self.heartbeat(ctx);
 
         let addr = ctx.address();
+
         self.race_addr
             .send(Connect {
                 addr: addr.recipient(),
@@ -82,14 +83,7 @@ impl Actor for WsConnection {
                 }
                 fut::ready(())
             })
-            .wait(ctx);
-    }
-
-    fn stopping(&mut self, _: &mut Self::Context) -> Running {
-        self.race_addr.do_send(Disconnect {
-            user_id: self.user_id.clone(),
-        });
-        Running::Stop
+            .wait(ctx)
     }
 }
 
@@ -112,7 +106,6 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for WsConnection {
                     Ok(message) => message,
                     Err(e) => return ctx.text(e.to_json().to_string()),
                 };
-                //append_msg_to_file(&location_update_message);
                 self.race_addr.do_send(location_update_message);
             }
             Ok(ws::Message::Close(reason)) => {
@@ -126,29 +119,14 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for WsConnection {
             Ok(ws::Message::Text(text)) => {
                 //These messages comes from other clients
                 debug!(message = "text message", action = "handle", ?text);
-                let location_update_message: LocationUpdateMessage = match text.try_into() {
-                    Ok(message) => message,
-                    Err(e) => return ctx.text(e.to_json().to_string()),
-                };
+                let location_update_message: LocationUpdateMessage =
+                    match text.as_bytes().to_owned().try_into() {
+                        Ok(message) => message,
+                        Err(e) => return ctx.text(e.to_json().to_string()),
+                    };
                 self.race_addr.do_send(location_update_message);
             }
             Err(e) => panic!("{}", e),
         }
     }
-}
-
-fn append_msg_to_file(msg: &LocationUpdateMessage) {
-    use std::fs::OpenOptions;
-    use std::io::Write;
-    use std::path::PathBuf;
-
-    let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    path.push("location_updates.json");
-    let mut file = OpenOptions::new()
-        .create(true)
-        .append(true)
-        .open(path)
-        .unwrap();
-    let json = serde_json::to_string(msg).unwrap();
-    writeln!(file, "{json},").unwrap();
 }
