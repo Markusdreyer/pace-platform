@@ -8,7 +8,7 @@ use prometheus::Encoder;
 use rdkafka::producer::FutureProducer;
 use rdkafka::{producer, ClientConfig};
 use shared::log::configure_log;
-use shared::model::{Kafka, Topics};
+use shared::model::Topics;
 use shared::{model::Settings, setup_config};
 use tracing::info;
 use uuid::Uuid;
@@ -56,9 +56,9 @@ async fn main() -> std::io::Result<()> {
             .wrap(cors)
             .service(metrics)
             .service(establish_connection)
-            .data(race_server.clone())
-            .data(kafka_producer.clone())
-            .data(config.kafka.topics.clone())
+            .app_data(Data::new(kafka_producer.clone()))
+            .app_data(Data::new(config.kafka.topics.clone()))
+            .app_data(Data::new(race_server.clone()))
     })
     .bind("0.0.0.0:8080")?
     .run()
@@ -69,7 +69,7 @@ async fn main() -> std::io::Result<()> {
 pub async fn establish_connection(
     req: HttpRequest,
     stream: Payload,
-    Path(race_id): Path<String>,
+    race_id: Path<String>,
     srv: Data<Addr<Race>>,
     kafka_producer: Data<FutureProducer>,
     kafka_topics: Data<Topics>,
@@ -81,7 +81,7 @@ pub async fn establish_connection(
     let user_id = Uuid::new_v4().to_string();
     let ws = WsConnection::new(
         user_id,
-        race_id,
+        race_id.to_string(),
         srv.get_ref().clone(),
         kafka_producer.get_ref().clone(),
         kafka_topics.get_ref().clone(),

@@ -28,7 +28,7 @@ impl Race {
                 let latency = measure_latency(&msg);
                 LOCATION_UPDATE_LATENCY.set(latency);
                 LOCATION_UPDATES_SENT.inc();
-                let _ = socket.do_send(WsMessage(msg.clone()));
+                socket.do_send(WsMessage(msg.clone()));
             }
         }
     }
