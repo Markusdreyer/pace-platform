@@ -8,7 +8,7 @@ use rdkafka::producer::{FutureProducer, FutureRecord};
 use rdkafka::util::Timeout;
 use shared::model::Topics;
 use std::time::{Duration, Instant};
-use tracing::{debug, error};
+use tracing::{debug, error, info};
 
 use super::messages::{Connect, Disconnect, LocationUpdateMessage, WsMessage};
 use super::race::Race;
@@ -47,6 +47,7 @@ impl WsConnection {
 
     fn heartbeat(&self, ctx: &mut ws::WebsocketContext<WsConnection>) {
         ctx.run_interval(HEARTBEAT_INTERVAL, |act, ctx| {
+            debug!(message = "running heartbeat check", user_id = ?act.user_id);
             if Instant::now().duration_since(act.heartbeat) > CLIENT_TIMEOUT {
                 error!(
                     message = "client heartbeat failed, disconnecting",
@@ -133,6 +134,14 @@ impl Actor for WsConnection {
                 fut::ready(())
             })
             .wait(ctx)
+    }
+
+    fn stopping(&mut self, ctx: &mut Self::Context) -> actix::Running {
+        self.race_addr.do_send(Disconnect {
+            user_id: self.user_id.clone(),
+        });
+        ctx.stop();
+        actix::Running::Stop
     }
 }
 
