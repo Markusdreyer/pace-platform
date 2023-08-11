@@ -4,6 +4,8 @@ run-benchmarking:
 	cd backend/benchmarking && cargo run
 run-spectator-client:
 	cd spectator-client && npm run dev
+dev-env:
+	cd backend/dev && docker-compose up -d
 deploy-websockets:
 	cd backend && flyctl deploy --config websockets/fly.toml --app websockets
 deploy-spectator-client:

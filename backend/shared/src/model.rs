@@ -4,6 +4,32 @@ use serde::Deserialize;
 pub struct Settings {
     #[serde(default = "default_log")]
     pub log: Log,
+    #[serde(default = "default_kafka")]
+    pub kafka: Kafka,
+}
+
+fn default_kafka() -> Kafka {
+    Kafka {
+        host: "localhost:9092".into(),
+        auto_commit: true,
+        security_protocol: "PLAINTEXT".into(),
+        topics: Topics {
+            location_update: "location_update".into(),
+        },
+    }
+}
+
+#[derive(Deserialize)]
+pub struct Kafka {
+    pub host: String,
+    pub auto_commit: bool,
+    pub security_protocol: String,
+    pub topics: Topics,
+}
+
+#[derive(Deserialize, Clone)]
+pub struct Topics {
+    pub location_update: String,
 }
 
 #[derive(Deserialize)]

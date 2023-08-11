@@ -4,8 +4,11 @@ use actix::{
 };
 use actix::{AsyncContext, Message};
 use actix_web_actors::ws;
+use rdkafka::producer::{FutureProducer, FutureRecord};
+use rdkafka::util::Timeout;
+use shared::model::Topics;
 use std::time::{Duration, Instant};
-use tracing::{debug, error};
+use tracing::{debug, error, info};
 
 use super::messages::{Connect, Disconnect, LocationUpdateMessage, WsMessage};
 use super::race::Race;
@@ -13,33 +16,43 @@ use super::race::Race;
 const HEARTBEAT_INTERVAL: Duration = Duration::from_secs(5);
 const CLIENT_TIMEOUT: Duration = Duration::from_secs(10);
 
-#[derive(Message, Debug)]
+#[derive(Message)]
 #[rtype(result = "()")]
 pub struct WsConnection {
     pub user_id: String,
     pub race_id: String,
     pub race_addr: Addr<Race>,
     pub heartbeat: Instant,
+    pub kafka_producer: FutureProducer,
+    pub kafka_topics: Topics,
 }
 
 impl WsConnection {
-    pub fn new(user_id: String, race_id: String, race: Addr<Race>) -> WsConnection {
+    pub fn new(
+        user_id: String,
+        race_id: String,
+        race: Addr<Race>,
+        kafka_producer: FutureProducer,
+        kafka_topics: Topics,
+    ) -> WsConnection {
         WsConnection {
             user_id,
             race_id,
             heartbeat: Instant::now(),
             race_addr: race,
+            kafka_producer,
+            kafka_topics,
         }
     }
 
     fn heartbeat(&self, ctx: &mut ws::WebsocketContext<WsConnection>) {
         ctx.run_interval(HEARTBEAT_INTERVAL, |act, ctx| {
-            debug!(message = "pinging client", action = "heartbeat", ?act);
+            debug!(message = "running heartbeat check", user_id = ?act.user_id);
             if Instant::now().duration_since(act.heartbeat) > CLIENT_TIMEOUT {
                 error!(
                     message = "client heartbeat failed, disconnecting",
                     action = "heartbeat",
-                    ?act
+                    user_id = ?act.user_id
                 );
                 act.race_addr.do_send(Disconnect {
                     user_id: act.user_id.clone(),
@@ -49,6 +62,43 @@ impl WsConnection {
             }
 
             ctx.ping(b"PING");
+        });
+    }
+
+    fn process_message(&mut self, location_update_message: LocationUpdateMessage) {
+        let kafka_message = match serde_json::to_string(&location_update_message) {
+            Ok(message) => message,
+            Err(e) => {
+                error!(
+                    message = "failed to serialize message",
+                    action = "process_message",
+                    ?e
+                );
+                return;
+            }
+        };
+
+        let user_id = location_update_message.user_id;
+        let kafka_producer = self.kafka_producer.clone();
+        let kafka_topic = self.kafka_topics.location_update.clone();
+        actix_web::rt::spawn(async move {
+            let result = kafka_producer
+                .send(
+                    FutureRecord::to(&kafka_topic)
+                        .payload(&kafka_message)
+                        .key(&user_id),
+                    Timeout::Never,
+                )
+                .await;
+
+            match result {
+                Ok(_) => {
+                    debug!(message = "message sent", action = "process_message");
+                }
+                Err(e) => {
+                    error!(message = "message not sent", action = "process_message", ?e);
+                }
+            }
         });
     }
 }
@@ -85,6 +135,14 @@ impl Actor for WsConnection {
             })
             .wait(ctx)
     }
+
+    fn stopping(&mut self, ctx: &mut Self::Context) -> actix::Running {
+        self.race_addr.do_send(Disconnect {
+            user_id: self.user_id.clone(),
+        });
+        ctx.stop();
+        actix::Running::Stop
+    }
 }
 
 impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for WsConnection {
@@ -100,13 +158,12 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for WsConnection {
                 self.heartbeat = Instant::now();
             }
             Ok(ws::Message::Binary(bin)) => {
-                //These messages comes from the app
+                //These messages come from the app
                 debug!(message = "binary message", action = "handle", ?bin);
-                let location_update_message: LocationUpdateMessage = match bin.try_into() {
-                    Ok(message) => message,
-                    Err(e) => return ctx.text(e.to_json().to_string()),
+                match bin.try_into() {
+                    Ok(location_update_message) => self.process_message(location_update_message),
+                    Err(e) => ctx.text(e.to_json().to_string()),
                 };
-                self.race_addr.do_send(location_update_message);
             }
             Ok(ws::Message::Close(reason)) => {
                 ctx.close(reason);
@@ -119,12 +176,10 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for WsConnection {
             Ok(ws::Message::Text(text)) => {
                 //These messages comes from other clients
                 debug!(message = "text message", action = "handle", ?text);
-                let location_update_message: LocationUpdateMessage =
-                    match text.as_bytes().to_owned().try_into() {
-                        Ok(message) => message,
-                        Err(e) => return ctx.text(e.to_json().to_string()),
-                    };
-                self.race_addr.do_send(location_update_message);
+                match text.as_bytes().to_owned().try_into() {
+                    Ok(location_update_message) => self.process_message(location_update_message),
+                    Err(e) => ctx.text(e.to_json().to_string()),
+                };
             }
             Err(e) => panic!("{}", e),
         }

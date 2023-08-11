@@ -11,7 +11,7 @@ use crate::{
 };
 
 use super::messages::{Connect, Disconnect, LocationUpdateMessage, WsMessage};
-use tracing::{debug, error};
+use tracing::{debug, error, info};
 
 type Socket = Recipient<WsMessage>;
 

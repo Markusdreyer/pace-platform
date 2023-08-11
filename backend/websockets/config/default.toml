@@ -1,3 +1,10 @@
 [log]
-level = "debug"
+level = "info"
 pretty_print = true
+
+[kafka]
+host = "localhost:9092"
+auto_commit = true
+security_protocol = "PLAINTEXT"
+[kafka.topics]
+location_update = "location_updates"
