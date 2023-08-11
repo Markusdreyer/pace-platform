@@ -30,7 +30,7 @@ struct Coordinates {
     long: f64,
 }
 
-const TOTAL_CLIENTS: usize = 100;
+const TOTAL_CLIENTS: usize = 300;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {

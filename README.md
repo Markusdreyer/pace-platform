@@ -1,6 +1,6 @@
 # Pace platform
+A work in progress repo for a real-time endurance race platform. Built using Rust, Websockets and Kafka.
 
-This repo contains all services related to the pace platform.
 ## Backend
 The pace backend is written in Rust with a monorepo approach using cargo workspace to structure the microservices.
 
