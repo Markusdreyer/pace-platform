@@ -26,7 +26,7 @@ impl Race {
             if id != &msg.user_id {
                 debug!(message = "sending message", action = "send_message", ?msg);
                 let latency = measure_latency(&msg);
-                LOCATION_UPDATE_LATENCY.set(latency);
+                LOCATION_UPDATE_LATENCY.observe(latency);
                 LOCATION_UPDATES_SENT.inc();
                 socket.do_send(WsMessage(msg.clone()));
             }
