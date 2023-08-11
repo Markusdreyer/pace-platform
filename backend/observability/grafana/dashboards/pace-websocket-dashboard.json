@@ -507,8 +507,7 @@
                 "value": 80
               }
             ]
-          },
-          "unit": "ms"
+          }
         },
         "overrides": []
       },
@@ -518,7 +517,7 @@
         "x": 0,
         "y": 18
       },
-      "id": 5,
+      "id": 14,
       "options": {
         "legend": {
           "calcs": [],
@@ -537,14 +536,54 @@
             "type": "prometheus",
             "uid": "websockets-backend"
           },
-          "editorMode": "builder",
-          "expr": "location_update_latency",
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.95, sum(rate(websockets_location_update_latency_milliseconds_bucket[$__interval])) by (le))",
           "instant": false,
+          "legendFormat": "95 %",
           "range": true,
           "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "websockets-backend"
+          },
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.90, sum(rate(websockets_location_update_latency_milliseconds_bucket[$__interval])) by (le))",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "90 %",
+          "range": true,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "websockets-backend"
+          },
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.80, sum(rate(websockets_location_update_latency_milliseconds_bucket[$__interval])) by (le))",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "80 %",
+          "range": true,
+          "refId": "C"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "websockets-backend"
+          },
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.70, sum(rate(websockets_location_update_latency_milliseconds_bucket[$__interval])) by (le))",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "70",
+          "range": true,
+          "refId": "D"
         }
       ],
-      "title": "Location Update Latency",
+      "title": "Updated latency",
       "type": "timeseries"
     },
     {
@@ -930,13 +969,13 @@
     "list": []
   },
   "time": {
-    "from": "now-30m",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Pace Websocket Dashboard",
   "uid": "ecffc083-bb7a-4f98-96a6-dfd74eb7a7f9",
-  "version": 2,
+  "version": 5,
   "weekStart": ""
 }
